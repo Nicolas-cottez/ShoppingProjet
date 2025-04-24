@@ -11,6 +11,8 @@ public class Utilisateur {
     private String motDePasse;
     private LocalDate dateInscription;
     private LocalTime heureInscription;
+    private String role;
+
 
     public Utilisateur(int idUtilisateur, String nom, String prenom, String email, String motDePasse, LocalDate dateInscription, LocalTime heureInscription) {
         this.idUtilisateur = idUtilisateur;
@@ -29,4 +31,8 @@ public class Utilisateur {
     public String getMotDePasse() { return motDePasse; }
     public LocalDate getDateInscription() { return dateInscription; }
     public LocalTime getHeureInscription() { return heureInscription; }
+    public String getRole() {return role;}
+
+    public void setRole(String role) {this.role = role;}
+
 }
