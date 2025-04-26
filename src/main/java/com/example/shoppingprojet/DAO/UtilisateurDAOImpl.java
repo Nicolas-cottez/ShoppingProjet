@@ -63,7 +63,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
                 LocalTime heureInscription = rs.getTime("heureInscription").toLocalTime();
 
                 Utilisateur u = new Utilisateur(id, nom, prenom, email, motDePasse, dateInscription, heureInscription);
-                u.setRole(isAdmin(email) ? "admin" : "client"); // ✅ Déduction dynamique du rôle
+                u.setRole(isAdmin(email) ? "admin" : "client");
                 return u;
             }
 
