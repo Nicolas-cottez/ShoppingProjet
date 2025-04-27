@@ -1,301 +1,21 @@
 package com.example.shoppingprojet.DAO;
-
 import com.example.shoppingprojet.Modele.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.time.*;
 
-
-
 public class AdministrateurDAOImpl implements AdministrateurDAO {
-
-    private void supprimerUtilisateur(int idUtilisateur) {
-        try (Connection connexion = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connexion.prepareStatement(
-                     "DELETE FROM utilisateurs WHERE idUtilisateur = ?")) {
-            preparedStatement.setInt(1, idUtilisateur);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void supprimerClient(int idClient) {
-        supprimerUtilisateur(idClient);
-    }
-
-    @Override
-    public void supprimerAdministrateur(int idAdministrateur) {
-        supprimerUtilisateur(idAdministrateur);
-    }
-
-    @Override
-    public Article chercherArticle(int idArticle) {
-        Article article = null;
-        try (Connection connexion = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connexion.prepareStatement(
-                     "SELECT articleID, nom, prixUnitaire, idMarque, description, stock, imageURL FROM articles WHERE articleID = ?"
-             )) {
-            preparedStatement.setInt(1, idArticle);
-            try (ResultSet resultats = preparedStatement.executeQuery()) {
-                if (resultats.next()) {
-                    int id = resultats.getInt("articleID");
-                    String nom = resultats.getString("nom");
-                    float prixUnitaire = resultats.getFloat("prixUnitaire");
-                    int idMarque = resultats.getInt("idMarque");
-                    String description = resultats.getString("description");
-                    int stock = resultats.getInt("stock");
-                    String imageURL = resultats.getString("imageURL"); // Récupérer l'imageURL
-                    article = new Article(id, idMarque, nom, description, prixUnitaire, stock, imageURL); // Inclure l'imageURL dans le constructeur
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return article;
-    }
-
-    @Override
-    public void ajouterArticle(Article article) {
-        try (Connection connexion = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connexion.prepareStatement(
-                     "INSERT INTO articles(nom, prixUnitaire, idMarque, description, stock, imageURL) VALUES (?, ?, ?, ?, ?, ?)"
-             )) {
-            preparedStatement.setString(1, article.getNom());
-            preparedStatement.setFloat(2, article.getPrixUnitaire());
-            preparedStatement.setInt(3, article.getIdMarque());
-            preparedStatement.setString(4, article.getDescription());
-            preparedStatement.setInt(5, article.getStock());
-            preparedStatement.setString(6, article.getImageURL()); // Ajouter l'imageURL
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void modifierArticle(Article article) {
-        try (Connection connexion = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connexion.prepareStatement(
-                     "UPDATE articles SET nom = ?, prixUnitaire = ?, idMarque = ?, description = ?, stock = ?, imageURL = ? WHERE articleID = ?"
-             )) {
-            preparedStatement.setString(1, article.getNom());
-            preparedStatement.setFloat(2, article.getPrixUnitaire());
-            preparedStatement.setInt(3, article.getIdMarque());
-            preparedStatement.setString(4, article.getDescription());
-            preparedStatement.setInt(5, article.getStock());
-            preparedStatement.setString(6, article.getImageURL()); // Ajouter l'imageURL à la mise à jour
-            preparedStatement.setInt(7, article.getIdArticle());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void supprimerArticle(int idArticle) {
-        try {
-            Connection connexion = DBConnection.getConnection();
-            String sql = "DELETE FROM articles WHERE articleID = ?";
-            PreparedStatement preparedStatement = connexion.prepareStatement(sql);
-            preparedStatement.setInt(1, idArticle);
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-            connexion.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public ArrayList<Client> getAllClient() {
-        ArrayList<Client> listeClients = new ArrayList<>();
-        try (Connection connexion = DBConnection.getConnection();
-             Statement statement = connexion.createStatement();
-             ResultSet resultats = statement.executeQuery("SELECT * FROM clients")) {
-            while (resultats.next()) {
-                int idUtilisateur = resultats.getInt("idUtilisateur");
-                String nom = resultats.getString("nom");
-                String prenom = resultats.getString("prenom");
-                String email = resultats.getString("email");
-                String motDePasse = resultats.getString("motDePasse");
-                LocalDate dateInscription = resultats.getDate("dateInscription").toLocalDate();
-                LocalTime heureInscription = resultats.getTime("heureInscription").toLocalTime();
-                String typeClient = resultats.getString("typeClient");
-                String adressePostal = resultats.getString("adressePostal");
-                // Note: La liste des commandes nécessiterait une jointure ou une requête séparée,
-                // elle n'est généralement pas récupérée directement avec les informations du client.
-                Client client = new Client(idUtilisateur, nom, prenom, email, motDePasse, dateInscription, heureInscription, typeClient, adressePostal, null);
-                listeClients.add(client);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return listeClients;
-    }
-
-
-    @Override
-    public Marque chercherMarqueParId(int idMarque) {
-        Marque marque = null;
-        try {
-            Connection connexion = DBConnection.getConnection();
-            Statement statement = connexion.createStatement();
-            ResultSet resultats = statement.executeQuery("SELECT * FROM marques WHERE idMarque = " + idMarque);
-            if (resultats.next()) {
-                int id = resultats.getInt(1);
-                String nom = resultats.getString(2);
-                marque = new Marque(id, nom);
-            }
-            connexion.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return marque;
-    }
-
-    @Override
-    public void ajouterMarque(Marque marque) {
-        try {
-            Connection connexion = DBConnection.getConnection();
-            String sql = "INSERT INTO marques(marqueNom) VALUES (?)";
-            PreparedStatement preparedStatement = connexion.prepareStatement(sql);
-            preparedStatement.setString(1, marque.getNomMarque());
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-            connexion.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public Rapport creerRapport(Rapport rapport) {
-        Rapport nouveauRapport = null;
-        try {
-            Connection connexion = DBConnection.getConnection();
-            String sql = "INSERT INTO rapports(typeRapport, donnees) VALUES (?, ?)";
-            PreparedStatement preparedStatement = connexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setString(1, rapport.getTypeRapport());
-            preparedStatement.setString(2, rapport.getDonnees());
-            preparedStatement.executeUpdate();
-            ResultSet rs = preparedStatement.getGeneratedKeys();
-            if (rs.next()) {
-                int idGeneree = rs.getInt(1);
-                nouveauRapport = new Rapport(idGeneree, rapport.getTypeRapport(), rapport.getDonnees());
-            }
-            preparedStatement.close();
-            connexion.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return nouveauRapport;
-    }
-
-    @Override
-    public ArrayList<Rapport> getAllRapports() {
-        ArrayList<Rapport> listeRapports = new ArrayList<>();
-        try {
-            Connection connexion = DBConnection.getConnection();
-            Statement statement = connexion.createStatement();
-            ResultSet resultats = statement.executeQuery("SELECT * FROM rapports");
-            while (resultats.next()) {
-                int id = resultats.getInt(1);
-                String titre = resultats.getString(2);
-                String contenu = resultats.getString(3);
-                Rapport rapport = new Rapport(id, titre, contenu);
-                listeRapports.add(rapport);
-            }
-            connexion.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return listeRapports;
-    }
-
-    @Override
-    public void supprimerRapport(int idRapport) {
-        try {
-            Connection connexion = DBConnection.getConnection();
-            String sql = "DELETE FROM rapports WHERE idRapport = ?";
-            PreparedStatement preparedStatement = connexion.prepareStatement(sql);
-            preparedStatement.setInt(1, idRapport);
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-            connexion.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    @Override
-    public ArrayList<Remise> getAllRemise() {
-        ArrayList<Remise> listeRemises = new ArrayList<>();
-        try {
-            Connection connexion = DBConnection.getConnection();
-            Statement statement = connexion.createStatement();
-            ResultSet resultats = statement.executeQuery("SELECT idRemise, idArticle, seuil, pourcentageDeRemise FROM remises");
-            while (resultats.next()) {
-                int id = resultats.getInt("idRemise");
-                int idArticle = resultats.getInt("idArticle");
-                int seuil = resultats.getInt("seuil");
-                float pourcentage = resultats.getFloat("pourcentageDeRemise");
-                Remise remise = new Remise(id, idArticle, seuil, pourcentage);
-                listeRemises.add(remise);
-            }
-            statement.close(); // Fermer le statement
-            connexion.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return listeRemises;
-    }
-
-    @Override
-    public Remise creerRemise(Remise remise) {
-        Remise nouvelleRemise = null;
-        try {
-            Connection connexion = DBConnection.getConnection();
-            String sql = "INSERT INTO remises(idArticle, seuil, pourcentageDeRemise) VALUES (?, ?, ?)";
-            PreparedStatement preparedStatement = connexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            preparedStatement.setInt(1, remise.getIdArticle());
-            preparedStatement.setInt(2, remise.getSeuil());
-            preparedStatement.setFloat(3, remise.getPourcentageDeRemise());
-            preparedStatement.executeUpdate();
-            ResultSet rs = preparedStatement.getGeneratedKeys();
-            if (rs.next()) {
-                int idGenere = rs.getInt(1);
-                nouvelleRemise = new Remise(idGenere, remise.getIdArticle(), remise.getSeuil(), remise.getPourcentageDeRemise());
-            }
-            preparedStatement.close();
-            connexion.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return nouvelleRemise;
-    }
-
-    @Override
-    public void supprimerRemise(int idRemise) {
-        try {
-            Connection connexion = DBConnection.getConnection();
-            String sql = "DELETE FROM remises WHERE idRemise = ?";
-            PreparedStatement preparedStatement = connexion.prepareStatement(sql);
-            preparedStatement.setInt(1, idRemise);
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-            connexion.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public ArrayList<Administrateur> getAllAdministrateurs() {
         ArrayList<Administrateur> listeAdmins = new ArrayList<>();
+        String sql = "SELECT idUtilisateur, nom, prenom, email, motDePasse, dateInscription, heureInscription, idAdmin " +
+                "FROM Utilisateur WHERE typeUtilisateur = 'Administrateur'";
+
         try (Connection connexion = DBConnection.getConnection();
-             Statement statement = connexion.createStatement();
-             ResultSet resultats = statement.executeQuery("SELECT * FROM administrateurs")) {
+             PreparedStatement preparedStatement = connexion.prepareStatement(sql);
+             ResultSet resultats = preparedStatement.executeQuery()) {
+
             while (resultats.next()) {
                 int idUtilisateur = resultats.getInt("idUtilisateur");
                 String nom = resultats.getString("nom");
@@ -313,37 +33,114 @@ public class AdministrateurDAOImpl implements AdministrateurDAO {
         }
         return listeAdmins;
     }
+
     @Override
-    public void ajouterAdministrateur(Administrateur administrateur) {
-        try {
-            Connection connexion = DBConnection.getConnection();
-            String sql = "INSERT INTO administrateurs(adminNom, adminMail) VALUES (?, ?)";
-            PreparedStatement preparedStatement = connexion.prepareStatement(sql);
-            preparedStatement.setString(1, administrateur.getNom());
-            preparedStatement.setString(2, administrateur.getEmail());
+    public void ajouterAdministrateur(Administrateur admin) {
+        String sql = "INSERT INTO Utilisateur (nom, prenom, email, motDePasse, dateInscription, heureInscription, typeUtilisateur, idAdmin) " +
+                "VALUES (?, ?, ?, ?, ?, ?, 'Administrateur', ?)";
+
+        try (Connection connexion = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connexion.prepareStatement(sql)) {
+            preparedStatement.setString(1, admin.getNom());
+            preparedStatement.setString(2, admin.getPrenom());
+            preparedStatement.setString(3, admin.getEmail());
+            preparedStatement.setString(4, admin.getMotDePasse());
+            preparedStatement.setDate(5, Date.valueOf(admin.getDateInscription()));
+            preparedStatement.setTime(6, Time.valueOf(admin.getHeureInscription()));
+            preparedStatement.setInt(7, admin.getIdAdmin());
             preparedStatement.executeUpdate();
-            preparedStatement.close();
-            connexion.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-
     @Override
-    public void modifierAdministrateur(Administrateur administrateur) {
-        try {
-            Connection connexion = DBConnection.getConnection();
-            String sql = "UPDATE administrateurs SET adminNom = ?, adminMail = ? WHERE adminID = ?";
-            PreparedStatement preparedStatement = connexion.prepareStatement(sql);
-            preparedStatement.setString(1, administrateur.getNom());
-            preparedStatement.setString(2, administrateur.getEmail());
-            preparedStatement.setInt(3, administrateur.getIdAdmin());
+    public void modifierAdministrateur(Administrateur admin) {
+        String sql = "UPDATE Utilisateur SET nom = ?, prenom = ?, email = ?, motDePasse = ?, dateInscription = ?, " +
+                "heureInscription = ?, idAdmin = ? WHERE idUtilisateur = ? AND typeUtilisateur = 'Administrateur'";
+
+        try (Connection connexion = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connexion.prepareStatement(sql)) {
+            preparedStatement.setString(1, admin.getNom());
+            preparedStatement.setString(2, admin.getPrenom());
+            preparedStatement.setString(3, admin.getEmail());
+            preparedStatement.setString(4, admin.getMotDePasse());
+            preparedStatement.setDate(5, Date.valueOf(admin.getDateInscription()));
+            preparedStatement.setTime(6, Time.valueOf(admin.getHeureInscription()));
+            preparedStatement.setInt(7, admin.getIdAdmin());
+            preparedStatement.setInt(8, admin.getIdUtilisateur());
             preparedStatement.executeUpdate();
-            preparedStatement.close();
-            connexion.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void supprimerAdministrateur(int idAdmin) {
+        String sql = "DELETE FROM Utilisateur WHERE idAdmin = ? AND typeUtilisateur = 'Administrateur'";
+
+        try (Connection connexion = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connexion.prepareStatement(sql)) {
+            preparedStatement.setInt(1, idAdmin);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Administrateur rechercherAdministrateur(int idAdmin) {
+        Administrateur administrateur = null;
+        String sql = "SELECT idUtilisateur, nom, prenom, email, motDePasse, dateInscription, heureInscription, idAdmin " +
+                "FROM Utilisateur WHERE idAdmin = ? AND typeUtilisateur = 'Administrateur'";
+
+        try (Connection connexion = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connexion.prepareStatement(sql)) {
+            preparedStatement.setInt(1, idAdmin);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int idUtilisateur = resultSet.getInt("idUtilisateur");
+                    String nom = resultSet.getString("nom");
+                    String prenom = resultSet.getString("prenom");
+                    String email = resultSet.getString("email");
+                    String motDePasse = resultSet.getString("motDePasse");
+                    LocalDate dateInscription = resultSet.getDate("dateInscription").toLocalDate();
+                    LocalTime heureInscription = resultSet.getTime("heureInscription").toLocalTime();
+                    int adminId = resultSet.getInt("idAdmin");
+                    administrateur = new Administrateur(idUtilisateur, nom, prenom, email, motDePasse, dateInscription, heureInscription, adminId);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return administrateur;
+    }
+
+    @Override
+    public Administrateur rechercherAdministrateurParNom(String nomAdmin) {
+        Administrateur administrateur = null;
+        String sql = "SELECT idUtilisateur, nom, prenom, email, motDePasse, dateInscription, heureInscription, idAdmin " +
+                "FROM Utilisateur WHERE nom = ? AND typeUtilisateur = 'Administrateur'";
+
+        try (Connection connexion = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connexion.prepareStatement(sql)) {
+            preparedStatement.setString(1, nomAdmin);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int idUtilisateur = resultSet.getInt("idUtilisateur");
+                    String nom = resultSet.getString("nom");
+                    String prenom = resultSet.getString("prenom");
+                    String email = resultSet.getString("email");
+                    String motDePasse = resultSet.getString("motDePasse");
+                    LocalDate dateInscription = resultSet.getDate("dateInscription").toLocalDate();
+                    LocalTime heureInscription = resultSet.getTime("heureInscription").toLocalTime();
+                    int idAdmin = resultSet.getInt("idAdmin");
+                    administrateur = new Administrateur(idUtilisateur, nom, prenom, email, motDePasse, dateInscription, heureInscription, idAdmin);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return administrateur;
     }
 }
