@@ -8,6 +8,7 @@ import java.time.*;
 
 
 public class AdministrateurDAOImpl implements AdministrateurDAO {
+
     private void supprimerUtilisateur(int idUtilisateur) {
         try (Connection connexion = DBConnection.getConnection();
              PreparedStatement preparedStatement = connexion.prepareStatement(
@@ -28,27 +29,27 @@ public class AdministrateurDAOImpl implements AdministrateurDAO {
     public void supprimerAdministrateur(int idAdministrateur) {
         supprimerUtilisateur(idAdministrateur);
     }
+
     @Override
     public Article chercherArticle(int idArticle) {
         Article article = null;
-        try {
-            Connection connexion = DBConnection.getConnection();
-            String sql = "SELECT * FROM articles WHERE articleID = ?";
-            try (PreparedStatement preparedStatement = connexion.prepareStatement(sql)) {
-                preparedStatement.setInt(1, idArticle);
-                try (ResultSet resultats = preparedStatement.executeQuery()) {
-                    if (resultats.next()) {
-                        int id = resultats.getInt("articleID");
-                        String nom = resultats.getString("nom");
-                        float prixUnitaire = resultats.getFloat("prixUnitaire");
-                        int idMarque = resultats.getInt("idMarque");
-                        String description = resultats.getString("description");
-                        int stock = resultats.getInt("stock");
-                        article = new Article(id, idMarque, nom, description, prixUnitaire, stock);
-                    }
+        try (Connection connexion = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connexion.prepareStatement(
+                     "SELECT articleID, nom, prixUnitaire, idMarque, description, stock, imageURL FROM articles WHERE articleID = ?"
+             )) {
+            preparedStatement.setInt(1, idArticle);
+            try (ResultSet resultats = preparedStatement.executeQuery()) {
+                if (resultats.next()) {
+                    int id = resultats.getInt("articleID");
+                    String nom = resultats.getString("nom");
+                    float prixUnitaire = resultats.getFloat("prixUnitaire");
+                    int idMarque = resultats.getInt("idMarque");
+                    String description = resultats.getString("description");
+                    int stock = resultats.getInt("stock");
+                    String imageURL = resultats.getString("imageURL"); // Récupérer l'imageURL
+                    article = new Article(id, idMarque, nom, description, prixUnitaire, stock, imageURL); // Inclure l'imageURL dans le constructeur
                 }
             }
-            connexion.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -59,13 +60,14 @@ public class AdministrateurDAOImpl implements AdministrateurDAO {
     public void ajouterArticle(Article article) {
         try (Connection connexion = DBConnection.getConnection();
              PreparedStatement preparedStatement = connexion.prepareStatement(
-                     "INSERT INTO articles(nom, prixUnitaire, idMarque, description, stock) VALUES (?, ?, ?, ?, ?)"
+                     "INSERT INTO articles(nom, prixUnitaire, idMarque, description, stock, imageURL) VALUES (?, ?, ?, ?, ?, ?)"
              )) {
             preparedStatement.setString(1, article.getNom());
             preparedStatement.setFloat(2, article.getPrixUnitaire());
             preparedStatement.setInt(3, article.getIdMarque());
             preparedStatement.setString(4, article.getDescription());
             preparedStatement.setInt(5, article.getStock());
+            preparedStatement.setString(6, article.getImageURL()); // Ajouter l'imageURL
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -76,14 +78,15 @@ public class AdministrateurDAOImpl implements AdministrateurDAO {
     public void modifierArticle(Article article) {
         try (Connection connexion = DBConnection.getConnection();
              PreparedStatement preparedStatement = connexion.prepareStatement(
-                     "UPDATE articles SET nom = ?, prixUnitaire = ?, idMarque = ?, description = ?, stock = ? WHERE articleID = ?"
+                     "UPDATE articles SET nom = ?, prixUnitaire = ?, idMarque = ?, description = ?, stock = ?, imageURL = ? WHERE articleID = ?"
              )) {
             preparedStatement.setString(1, article.getNom());
             preparedStatement.setFloat(2, article.getPrixUnitaire());
             preparedStatement.setInt(3, article.getIdMarque());
             preparedStatement.setString(4, article.getDescription());
             preparedStatement.setInt(5, article.getStock());
-            preparedStatement.setInt(6, article.getIdArticle());
+            preparedStatement.setString(6, article.getImageURL()); // Ajouter l'imageURL à la mise à jour
+            preparedStatement.setInt(7, article.getIdArticle());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -286,6 +289,7 @@ public class AdministrateurDAOImpl implements AdministrateurDAO {
             e.printStackTrace();
         }
     }
+
     @Override
     public ArrayList<Administrateur> getAllAdministrateurs() {
         ArrayList<Administrateur> listeAdmins = new ArrayList<>();
