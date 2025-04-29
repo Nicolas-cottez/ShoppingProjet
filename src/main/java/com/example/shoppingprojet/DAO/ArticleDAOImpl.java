@@ -46,7 +46,7 @@ public class ArticleDAOImpl implements ArticleDAO {
     @Override
     public Article chercherArticleParId(int idArticle) {
         Article Article = null;
-        String sql = "SELECT ArticleID, nom, prixUnitaire, idMarque, description, stock, imageURL FROM Articles WHERE ArticleID = ?";
+        String sql = "SELECT idArticle, nom, prixUnitaire, idMarque, description, stock, imageURL FROM Article WHERE idArticle = ?";
         try (Connection connexion = DBConnection.getConnection();
              PreparedStatement preparedStatement = connexion.prepareStatement(sql)) {
             preparedStatement.setInt(1, idArticle);
@@ -64,7 +64,7 @@ public class ArticleDAOImpl implements ArticleDAO {
 
     @Override
     public void ajouterArticle(Article Article) {
-        String sql = "INSERT INTO Articles(nom, prixUnitaire, idMarque, description, stock, imageURL) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Article(nom, prixUnitaire, idMarque, description, stock, imageURL) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection connexion = DBConnection.getConnection();
              PreparedStatement preparedStatement = connexion.prepareStatement(sql)) {
             preparedStatement.setString(1, Article.getNom());
@@ -81,7 +81,7 @@ public class ArticleDAOImpl implements ArticleDAO {
 
     @Override
     public void modifierArticle(Article Article) {
-        String sql = "UPDATE Articles SET nom = ?, prixUnitaire = ?, idMarque = ?, description = ?, stock = ?, imageURL = ? WHERE ArticleID = ?";
+        String sql = "UPDATE Article SET nom = ?, prixUnitaire = ?, idMarque = ?, description = ?, stock = ?, imageURL = ? WHERE idArticle = ?";
         try (Connection connexion = DBConnection.getConnection();
              PreparedStatement preparedStatement = connexion.prepareStatement(sql)) {
             preparedStatement.setString(1, Article.getNom());
@@ -99,7 +99,7 @@ public class ArticleDAOImpl implements ArticleDAO {
 
     @Override
     public void supprimerArticle(int idArticle) {
-        String sql = "DELETE FROM Articles WHERE ArticleID = ?";
+        String sql = "DELETE FROM Article WHERE idArticle = ?";
         try (Connection connexion = DBConnection.getConnection();
              PreparedStatement preparedStatement = connexion.prepareStatement(sql)) {
             preparedStatement.setInt(1, idArticle);
@@ -112,7 +112,7 @@ public class ArticleDAOImpl implements ArticleDAO {
     @Override
     public ArrayList<Article> getAllArticle() {
         ArrayList<Article> listeArticles = new ArrayList<>();
-        String sql = "SELECT ArticleID, nom, prixUnitaire, idMarque, description, stock, imageURL FROM Articles";
+        String sql = "SELECT idArticle, nom, prixUnitaire, idMarque, description, stock, imageURL FROM Article";
         try (Connection connexion = DBConnection.getConnection();
              Statement statement = connexion.createStatement();
              ResultSet resultats = statement.executeQuery(sql)) {
@@ -128,7 +128,7 @@ public class ArticleDAOImpl implements ArticleDAO {
     @Override
     public ArrayList<Article> getAllArticleByMarque(int idMarque) {
         ArrayList<Article> listeArticles = new ArrayList<>();
-        String sql = "SELECT ArticleID, nom, prixUnitaire, idMarque, description, stock, imageURL FROM Articles WHERE idMarque = ?";
+        String sql = "SELECT idArticle, nom, prixUnitaire, idMarque, description, stock, imageURL FROM Article WHERE idMarque = ?";
         try (Connection connexion = DBConnection.getConnection();
              PreparedStatement preparedStatement = connexion.prepareStatement(sql)) {
             preparedStatement.setInt(1, idMarque);
@@ -146,7 +146,7 @@ public class ArticleDAOImpl implements ArticleDAO {
     @Override
     public ArrayList<Article> getAllArticleByNom(String nomArticle) {
         ArrayList<Article> listeArticles = new ArrayList<>();
-        String sql = "SELECT ArticleID, nom, prixUnitaire, idMarque, description, stock, imageURL FROM Articles WHERE nom LIKE ?";
+        String sql = "SELECT idArticle, nom, prixUnitaire, idMarque, description, stock, imageURL FROM Article WHERE nom LIKE ?";
         try (Connection connexion = DBConnection.getConnection();
              PreparedStatement preparedStatement = connexion.prepareStatement(sql)) {
             preparedStatement.setString(1, "%" + nomArticle + "%");
@@ -165,7 +165,7 @@ public class ArticleDAOImpl implements ArticleDAO {
     @Override
     public ArrayList<Article> getAllArticlesByPrix(double prixMin, double prixMax) {
         ArrayList<Article> listeArticles = new ArrayList<>();
-        String sql = "SELECT ArticleID, nom, prixUnitaire, idMarque, description, stock, imageURL FROM Articles WHERE prixUnitaire BETWEEN ? AND ?";
+        String sql = "SELECT idArticle, nom, prixUnitaire, idMarque, description, stock, imageURL FROM Article WHERE prixUnitaire BETWEEN ? AND ?";
         try (Connection connexion = DBConnection.getConnection();
              PreparedStatement preparedStatement = connexion.prepareStatement(sql)) {
             preparedStatement.setDouble(1, prixMin);
@@ -184,9 +184,9 @@ public class ArticleDAOImpl implements ArticleDAO {
     @Override
     public ArrayList<Article> getAllArticlesTriesPrixCroissant(boolean croissant) {
         ArrayList<Article> listeArticles = new ArrayList<>();
-        String sql = "SELECT ArticleID, nom, prixUnitaire, idMarque, description, stock, imageURL FROM Articles ORDER BY prixUnitaire ASC";
+        String sql = "SELECT idArticle, nom, prixUnitaire, idMarque, description, stock, imageURL FROM Article ORDER BY prixUnitaire ASC";
         if (!croissant) {
-            sql = "SELECT ArticleID, nom, prixUnitaire, idMarque, description, stock, imageURL FROM Articles ORDER BY prixUnitaire DESC";
+            sql = "SELECT idArticle, nom, prixUnitaire, idMarque, description, stock, imageURL FROM Article ORDER BY prixUnitaire DESC";
         }
         try (Connection connexion = DBConnection.getConnection();
              Statement statement = connexion.createStatement();
