@@ -2,8 +2,8 @@ package com.example.shoppingprojet.Modele;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Commande {
     private int idCommande;
@@ -11,10 +11,10 @@ public class Commande {
     private LocalTime heureCommande;
     private float montantTotal;
     private Client client;
-    private List<Article> articles;
+    private List<ArticlePanier> articles;
 
     public Commande(int idCommande, LocalDate dateCommande, LocalTime heureCommande,
-                    float montantTotal, Client client, List<Article> articles) {
+                    float montantTotal, Client client, List<ArticlePanier> articles) {
         this.idCommande = idCommande;
         this.dateCommande = dateCommande;
         this.heureCommande = heureCommande;
@@ -28,6 +28,11 @@ public class Commande {
     public LocalTime getHeureCommande() { return heureCommande; }
     public float getMontantTotal() { return montantTotal; }
     public Client getClient() { return client; }
-    public List<Article> getArticles() { return articles; }
-}
+    public List<ArticlePanier> getArticles() { return articles; }
 
+    public void ajouterArticle(Article article, int quantite) {
+        ArticlePanier articlePanier = new ArticlePanier(article, quantite);
+        articles.add(articlePanier);
+    }
+
+}

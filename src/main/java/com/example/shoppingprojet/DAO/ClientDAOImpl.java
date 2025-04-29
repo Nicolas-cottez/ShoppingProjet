@@ -129,4 +129,3 @@ public class ClientDAOImpl implements ClientDAO {
         return client;
     }
 }
-

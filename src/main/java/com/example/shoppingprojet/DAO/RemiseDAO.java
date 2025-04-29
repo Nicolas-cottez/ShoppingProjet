@@ -9,4 +9,3 @@ public interface RemiseDAO {
     public void supprimerRemise(int idRemise);
     public Remise rechercherRemise(int idRemise);
 }
-

@@ -7,7 +7,8 @@ public class Article {
     private String description;
     private float prixUnitaire;
     private int stock;
-    private String imageURL; // Nouvel attribut pour le lien de l'image
+    private String imageURL;
+    private String nomMarque;
 
     // Constructeur mis à jour pour inclure l'imageURL
     public Article(int idArticle, int idMarque, String nom, String description, float prixUnitaire, int stock, String imageURL) {
@@ -27,6 +28,12 @@ public class Article {
     public float getPrixUnitaire() { return prixUnitaire; }
     public int getStock() { return stock; }
     public String getImageURL() { return imageURL; } // Getter pour l'imageURL
+    public String getNomMarque() {
+        return nomMarque;
+    }
+    public void setNomMarque(String nomMarque) {
+        this.nomMarque = nomMarque;
+    }
 
     // Vous pouvez également ajouter un setter si nécessaire
     public void setImageURL(String imageURL) { this.imageURL = imageURL; }

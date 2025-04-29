@@ -14,6 +14,8 @@
     <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
     <Button text="Connexion" onAction="#handleLogin" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+    <Button text="Créer un compte" onAction="#goToRegister" prefWidth="200"/>
+
 
     <Label fx:id="errorLabel" GridPane.rowIndex="3" GridPane.columnIndex="1" textFill="red"/>
 

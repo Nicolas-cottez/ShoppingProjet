@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public interface UtilisateurDAO {
     boolean checkLogin(String email, String password);
     Utilisateur findByEmailAndPassword(String email, String password);
-
+    boolean createUser(Utilisateur utilisateur);
 
     //public ArrayList<Article> getAllArticles();
     //public ArrayList<Marque> getAllMarques();

@@ -13,5 +13,7 @@ public class Administrateur extends Utilisateur {
         this.idAdmin = idAdmin;
     }
 
-    public int getIdAdmin() { return idAdmin; }
+    public int getIdAdmin() {
+        return idAdmin;
+    }
 }

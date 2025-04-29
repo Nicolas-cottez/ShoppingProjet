@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+
 public class UtilisateurDAOImpl implements UtilisateurDAO {
 
     @Override
@@ -73,6 +74,28 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 
         return null;
     }
+    @Override
+    public boolean createUser(Utilisateur utilisateur) {
+        String sql = "INSERT INTO utilisateur "
+                + "(nom, prenom, email, motDePasse, dateInscription, heureInscription) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, utilisateur.getNom());
+            stmt.setString(2, utilisateur.getPrenom());
+            stmt.setString(3, utilisateur.getEmail());
+            stmt.setString(4, utilisateur.getMotDePasse());
+            stmt.setDate(5, java.sql.Date.valueOf(utilisateur.getDateInscription()));
+            stmt.setTime(6, java.sql.Time.valueOf(utilisateur.getHeureInscription()));
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 
 }

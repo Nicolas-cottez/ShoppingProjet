@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.shoppingprojet.Controleur.BoutiqueController">
+
+    <center>
+        <VBox spacing="10" alignment="CENTER">
+            <padding>
+                <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+            </padding>
+
+            <Label text="Boutique de la Plage 🏖️" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+            <Button text="Voir mon Panier" onAction="#ouvrirPanierDepuisBoutique" prefWidth="200" />
+
+            <TableView fx:id="tableArticles" prefHeight="400" prefWidth="800">
+                <columns>
+                    <TableColumn fx:id="colNom" text="Nom" prefWidth="150"/>
+                    <TableColumn fx:id="colDescription" text="Description" prefWidth="250"/>
+                    <TableColumn fx:id="colPrix" text="Prix (€)" prefWidth="100"/>
+                    <TableColumn fx:id="colStock" text="Stock" prefWidth="100"/>
+                    <TableColumn fx:id="colMarque" text="Marque" prefWidth="150"/>
+                    <TableColumn fx:id="colAction" text="Action" prefWidth="100"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+</BorderPane>
