@@ -56,6 +56,7 @@ public class RegisterController {
                 stage.setScene(new Scene(root));
                 stage.setTitle("Connexion");
                 stage.show();
+                stage.setMaximized(true);
             } catch (IOException e) {
                 e.printStackTrace();
             }

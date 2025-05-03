@@ -18,8 +18,6 @@
 
             <Label text="Boutique de la Plage 🏖️" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
-            <Button text="Voir mon Panier" onAction="#ouvrirPanierDepuisBoutique" prefWidth="200" />
-
             <TableView fx:id="tableArticles" prefHeight="400" prefWidth="800">
                 <columns>
                     <TableColumn fx:id="colNom" text="Nom" prefWidth="150"/>

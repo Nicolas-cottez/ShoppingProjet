@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.shoppingprojet.Controleur.HistoriqueController">
+
+    <Label text="Historique des commandes" style="-fx-font-size: 18;"/>
+
+    <SplitPane orientation="VERTICAL">
+
+        <!-- Table des commandes -->
+        <TableView fx:id="tableCommandes">
+            <columns>
+                <TableColumn text="N°"         fx:id="colNum"       />
+                <TableColumn text="Date"       fx:id="colDate"      />
+                <TableColumn text="Heure"      fx:id="colHeure"     />
+                <TableColumn text="Montant (€)" fx:id="colTotal"     />
+            </columns>
+        </TableView>
+
+        <!-- Table des lignes -->
+        <TableView fx:id="tableLignes">
+            <columns>
+                <TableColumn text="Article"     fx:id="colNomArt"      />
+                <TableColumn text="Quantité"    fx:id="colQteArt"      />
+                <TableColumn text="Total ligne" fx:id="colTotalLigne"  />
+            </columns>
+        </TableView>
+
+    </SplitPane>
+</VBox>

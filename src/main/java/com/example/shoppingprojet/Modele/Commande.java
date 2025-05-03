@@ -22,7 +22,9 @@ public class Commande {
         this.client = client;
         this.articles = articles != null ? articles : new ArrayList<>();
     }
-
+    public void setIdCommande(int idCommande) {
+        this.idCommande = idCommande;
+    }
     public int getIdCommande() { return idCommande; }
     public LocalDate getDateCommande() { return dateCommande; }
     public LocalTime getHeureCommande() { return heureCommande; }

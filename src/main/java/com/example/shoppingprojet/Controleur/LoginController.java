@@ -6,6 +6,7 @@ import com.example.shoppingprojet.Modele.Utilisateur;
 import com.example.shoppingprojet.Modele.Client;
 import com.example.shoppingprojet.Modele.Commande;
 import com.example.shoppingprojet.Modele.ClientSession;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -59,13 +60,21 @@ public class LoginController {
                     );
                     ClientSession.setCommande(commande);
 
-                    loader = new FXMLLoader(getClass().getResource("/com/example/shoppingprojet/client-accueil.fxml"));
+                    loader = new FXMLLoader(getClass().getResource(
+                            "/com/example/shoppingprojet/main.fxml"
+                    ));
                 }
+
 
                 Parent root = loader.load();
                 stage.setScene(new Scene(root));
                 stage.setTitle("Accueil - " + user.getRole());
                 stage.show();
+                Platform.runLater(() -> {
+                    stage.setFullScreen(true);
+                    stage.setFullScreenExitHint("");
+                });
+
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -83,6 +92,7 @@ public class LoginController {
             stage.setScene(new Scene(root));
             stage.setTitle("Créer un compte");
             stage.show();
+            stage.setMaximized(true);
         } catch (IOException e) {
             e.printStackTrace();
         }

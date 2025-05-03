@@ -8,4 +8,5 @@ public interface RemiseDAO {
     public void modifierRemise(Remise remise);
     public void supprimerRemise(int idRemise);
     public Remise rechercherRemise(int idRemise);
+    Remise findByArticle(int idArticle);
 }

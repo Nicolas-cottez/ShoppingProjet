@@ -5,12 +5,13 @@ import java.util.ArrayList;
 
 public class RemiseDAOImpl implements RemiseDAO {
 
-    private Remise ResulatRemise(ResultSet rs) throws SQLException {
-        int idRemise = rs.getInt("idRemise");
-        int idArticle = rs.getInt("idArticle");
-        int seuil = rs.getInt("seuil");
-        float pourcentageDeRemise = rs.getFloat("pourcentageDeRemise");
-        return new Remise(idRemise, idArticle, seuil, pourcentageDeRemise);
+    private Remise mapResultSetToRemise(ResultSet rs) throws SQLException {
+        return new Remise(
+                rs.getInt("idRemise"),
+                rs.getInt("idArticle"),
+                rs.getInt("seuil"),
+                rs.getFloat("pourcentageDeRemise")
+        );
     }
 
     @Override
@@ -21,7 +22,7 @@ public class RemiseDAOImpl implements RemiseDAO {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                remises.add(ResulatRemise(rs));
+                remises.add(mapResultSetToRemise(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -81,7 +82,7 @@ public class RemiseDAOImpl implements RemiseDAO {
             pstmt.setInt(1, idRemise);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    remise = ResulatRemise(rs);
+                    remise = mapResultSetToRemise(rs);
                 }
             }
         } catch (SQLException e) {
@@ -89,5 +90,25 @@ public class RemiseDAOImpl implements RemiseDAO {
             return null;
         }
         return remise;
+    }
+    @Override
+    public Remise findByArticle(int idArticle) {
+        String sql = """
+            SELECT idRemise, idArticle, seuil, pourcentageDeRemise
+              FROM remise
+             WHERE idArticle = ?
+        """;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idArticle);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToRemise(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

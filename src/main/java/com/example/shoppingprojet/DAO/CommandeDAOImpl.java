@@ -70,20 +70,34 @@ public class CommandeDAOImpl implements CommandeDAO {
 
 
     @Override
-    public void ajouterCommande(Commande commande) {
-        String sql = "INSERT INTO commande (idCommande, dateCommande, heureCommande, montantTotal, idClient) VALUES (?, ?, ?, ?, ?)";
+    public int ajouterCommande(Commande commande) {
+        String sql = """
+        INSERT INTO commande
+          (dateCommande, heureCommande, montantTotal, idClient)
+        VALUES (?, ?, ?, ?)
+        """;
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, commande.getIdCommande());
-            pstmt.setObject(2, commande.getDateCommande());
-            pstmt.setObject(3, commande.getHeureCommande());
-            pstmt.setFloat(4, commande.getMontantTotal());
-            pstmt.setInt(5, commande.getClient().getIdUtilisateur());
-            pstmt.executeUpdate();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            ps.setObject(1, commande.getDateCommande());
+            ps.setObject(2, commande.getHeureCommande());
+            ps.setFloat( 3, commande.getMontantTotal());
+            ps.setInt(   4, commande.getClient().getIdUtilisateur());
+
+            ps.executeUpdate();
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                if (keys.next()) {
+                    int id = keys.getInt(1);
+                    commande.setIdCommande(id);         // ajouter un setter dans Commande
+                    return id;
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return -1;
     }
+
 
     @Override
     public void modifierCommande(Commande commande) {
@@ -170,12 +184,52 @@ public class CommandeDAOImpl implements CommandeDAO {
     @Override
     public double calculerPrixCommande(Commande commande) {
         double prixTotal = 0.0;
-        if (commande != null && commande.getArticles() != null) {
-            for (ArticlePanier ap : commande.getArticles()) {
-                prixTotal += ap.getTotal();
+        if (commande == null || commande.getArticles() == null) {
+            return 0.0;
+        }
+        // DAO de remise
+        RemiseDAO remiseDAO = new RemiseDAOImpl();
+
+        for (ArticlePanier ap : commande.getArticles()) {
+            float prixUnitaire = ap.getArticle().getPrixUnitaire();
+            int qte = ap.getQuantite();
+
+            // Prix sans remise
+            double totalLigne = prixUnitaire * qte;
+
+            // Chargement de la remise pour cet article
+            Remise r = remiseDAO.findByArticle(ap.getArticle().getIdArticle());
+            if (r != null && qte >= r.getSeuil()) {
+                // Applique un pourcentage de remise sur la ligne
+                double taux = r.getPourcentageDeRemise() / 100.0;
+                totalLigne = totalLigne * (1.0 - taux);
             }
+
+            prixTotal += totalLigne;
         }
         return prixTotal;
     }
+    @Override
+    public List<Commande> getCommandesByClient(int idClient) {
+        List<Commande> commandes = new ArrayList<>();
+        String sql = """
+        SELECT idCommande, dateCommande, heureCommande, montantTotal
+          FROM commande
+         WHERE idClient = ?
+    """;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idClient);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    commandes.add(ResultatCommande(rs));  // charge aussi les ArticlePanier
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return commandes;
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.example.shoppingprojet.Controleur;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,8 +15,13 @@ public class Main extends Application {
 
         primaryStage.setTitle("Connexion");
         primaryStage.setScene(new Scene(root));
-        primaryStage.setMaximized(true);
         primaryStage.show();
+        primaryStage.show();
+        Platform.runLater(() -> {
+            primaryStage.setFullScreen(true);
+            primaryStage.setFullScreenExitHint("");
+        });
+
     }
 
     public static void main(String[] args) {

@@ -42,14 +42,18 @@ public class LigneCommandeDAOImpl implements LigneCommandeDAO {
 
     @Override
     public void ajouterLigneCommande(LigneCommande ligneCommande) {
-        String sql = "INSERT INTO ligne_commande (idCommande, idArticle, quantite, prixLigne) VALUES (?, ?, ?, ?)";
+        String sql = """
+            INSERT INTO ligne_commande
+              (idCommande, idArticle, quantite, prixLigne)
+            VALUES (?, ?, ?, ?)
+        """;
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, ligneCommande.getIdCommande());
-            pstmt.setInt(2, ligneCommande.getArticle().getIdArticle());
-            pstmt.setInt(3, ligneCommande.getQuantite());
-            pstmt.setFloat(4, ligneCommande.getPrixLigne());
-            pstmt.executeUpdate();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(   1, ligneCommande.getIdCommande());
+            ps.setInt(   2, ligneCommande.getArticle().getIdArticle());
+            ps.setInt(   3, ligneCommande.getQuantite());
+            ps.setFloat( 4, ligneCommande.getPrixLigne());
+            ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

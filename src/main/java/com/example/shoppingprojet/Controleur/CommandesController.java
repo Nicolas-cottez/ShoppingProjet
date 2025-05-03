@@ -31,6 +31,7 @@ public class CommandesController {
             stage.setScene(new Scene(root));
             stage.setTitle("Accueil Client");
             stage.show();
+            stage.setMaximized(true);
         } catch (IOException e) {
             e.printStackTrace();
         }

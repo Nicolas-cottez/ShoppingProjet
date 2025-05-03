@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.shoppingprojet.Controleur.CheckoutController">
+
+    <top>
+        <ToolBar>
+            <Button text="← Annuler" onAction="#annuler"/>
+            <Button text="Confirmer la commande" onAction="#confirmerCommande"/>
+        </ToolBar>
+    </top>
+
+    <center>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <Label text="Adresse de livraison :"/>
+            <TextArea fx:id="livraisonField" prefRowCount="2"/>
+
+            <Label text="Adresse de facturation :"/>
+            <TextArea fx:id="facturationField" prefRowCount="2"/>
+
+            <Label text="Moyen de paiement :"/>
+            <ComboBox fx:id="paiementBox" promptText="Sélectionner un moyen"/>
+
+            <Label text="Numéro de carte :"/>
+            <TextField fx:id="cardNumberField"/>
+
+            <Label text="Date d'expiration (MM/AA) :"/>
+            <TextField fx:id="expField"/>
+
+            <Label text="CVV :"/>
+            <TextField fx:id="cvvField"/>
+
+            <Button text="Confirmer la commande" onAction="#confirmerCommande" maxWidth="200"/>
+        </VBox>
+    </center>
+
+</BorderPane>
