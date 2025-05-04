@@ -2,58 +2,62 @@ package com.example.shoppingprojet.Controleur;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class MainController {
 
-    @FXML
-    private AnchorPane centerPane;   // injected from main.fxml
+    @FXML private BorderPane rootPane;
+    @FXML private AnchorPane centerPane;
 
-    /** called right after FXML is loaded */
     @FXML
     public void initialize() {
-        // show the default view on startup
+        // On affiche la boutique par défaut
+        showBoutique();
+    }
+
+    @FXML
+    private void showBoutique() {
+        loadCenter("/com/example/shoppingprojet/boutique.fxml");
+    }
+
+    @FXML
+    private void showPanier() {
+        loadCenter("/com/example/shoppingprojet/panier.fxml");
+    }
+
+    @FXML
+    private void showHistorique() {
+        loadCenter("/com/example/shoppingprojet/historique.fxml");
+    }
+
+    @FXML
+    private void logout() {
+        // Simplement retourner à la login view
         try {
-            onShowBoutique();
-        } catch (Exception e) {
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            Parent login = FXMLLoader.load(getClass().getResource("/com/example/shoppingprojet/login.fxml"));
+            stage.getScene().setRoot(login);
+            stage.setTitle("Connexion");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    @FXML
-    private void onShowBoutique() throws Exception {
-        swapCenter("/com/example/shoppingprojet/boutique.fxml");
-    }
-
-    @FXML
-    private void onShowPanier() throws Exception {
-        swapCenter("/com/example/shoppingprojet/panier.fxml");
-    }
-
-    @FXML
-    private void onShowHistorique() throws Exception {
-        swapCenter("/com/example/shoppingprojet/historique.fxml");
-    }
-
-    @FXML
-    private void onLogout() throws Exception {
-        // you can either swap centerPane to login.fxml
-        // or replace the entire Scene root:
-        Parent loginRoot = FXMLLoader.load(
-                getClass().getResource("/com/example/shoppingprojet/login.fxml")
-        );
-        centerPane.getScene().setRoot(loginRoot);
-    }
-
-    /** helper: load an FXML and place it into the centerPane */
-    private void swapCenter(String fxmlPath) throws Exception {
-        Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
-        centerPane.getChildren().setAll(view);
-        // if you want it to grow to fit:
-        AnchorPane.setTopAnchor(view,    0.0);
-        AnchorPane.setRightAnchor(view,  0.0);
-        AnchorPane.setBottomAnchor(view, 0.0);
-        AnchorPane.setLeftAnchor(view,   0.0);
+    /**
+     * Charge un fichier FXML dans la partie centrale du BorderPane.
+     */
+    private void loadCenter(String fxmlPath) {
+        try {
+            Node view = FXMLLoader.load(getClass().getResource(fxmlPath));
+            rootPane.setCenter(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

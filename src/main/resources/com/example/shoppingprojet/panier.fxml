@@ -20,7 +20,7 @@
                 </columns>
             </TableView>
             <HBox spacing="10">
-                <Button fx:id="retourButton"        text="Retour Boutique" />
+
                 <Button fx:id="passerCommandeButton" text="Passer commande" />
             </HBox>
         </VBox>

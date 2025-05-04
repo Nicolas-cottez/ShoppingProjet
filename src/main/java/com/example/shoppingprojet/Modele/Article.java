@@ -13,9 +13,9 @@ public class Article {
     // Constructeur mis à jour pour inclure l'imageURL
     public Article(int idArticle, int idMarque, String nom, String description, float prixUnitaire, int stock, String imageURL) {
         this.idArticle = idArticle;
+        this.idMarque = idMarque;
         this.nom = nom;
         this.description = description;
-        this.idMarque = idMarque;
         this.prixUnitaire = prixUnitaire;
         this.stock = stock;
         this.imageURL = imageURL;
