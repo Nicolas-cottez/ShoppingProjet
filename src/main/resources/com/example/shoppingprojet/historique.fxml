@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox spacing="10" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.shoppingprojet.Controleur.HistoriqueController">
-
-    <Label text="Historique des commandes" style="-fx-font-size: 18;"/>
-
-    <SplitPane orientation="VERTICAL">
-
-        <!-- Table des commandes -->
-        <TableView fx:id="tableCommandes">
-            <columns>
-                <TableColumn text="N°"         fx:id="colNum"       />
-                <TableColumn text="Date"       fx:id="colDate"      />
-                <TableColumn text="Heure"      fx:id="colHeure"     />
-                <TableColumn text="Montant (€)" fx:id="colTotal"     />
-            </columns>
-        </TableView>
-
-        <!-- Table des lignes -->
-        <TableView fx:id="tableLignes">
-            <columns>
-                <TableColumn text="Article"     fx:id="colNomArt"      />
-                <TableColumn text="Quantité"    fx:id="colQteArt"      />
-                <TableColumn text="Total ligne" fx:id="colTotalLigne"  />
-            </columns>
-        </TableView>
-
-    </SplitPane>
-</VBox>
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.shoppingprojet.Controleur.HistoriqueController">
+    <children>
+        <VBox AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10"
+              AnchorPane.rightAnchor="10" spacing="15">
+            <Label text="Historique des commandes" style="-fx-font-size:20px;"/>
+            <TableView fx:id="tableCommandes" prefHeight="200">
+                <columns>
+                    <TableColumn fx:id="colNum"   text="N°"           prefWidth="60"/>
+                    <TableColumn fx:id="colDate"  text="Date"         prefWidth="120"/>
+                    <TableColumn fx:id="colHeure" text="Heure"        prefWidth="100"/>
+                    <TableColumn fx:id="colTotal" text="Montant (€)"  prefWidth="100"/>
+                </columns>
+            </TableView>
+            <TableView fx:id="tableLignes" prefHeight="200">
+                <columns>
+                    <TableColumn fx:id="colNomArt"     text="Article"    prefWidth="200"/>
+                    <TableColumn fx:id="colQteArt"     text="Quantité"   prefWidth="100"/>
+                    <TableColumn fx:id="colTotalLigne" text="Total ligne" prefWidth="120"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </children>
+</AnchorPane>

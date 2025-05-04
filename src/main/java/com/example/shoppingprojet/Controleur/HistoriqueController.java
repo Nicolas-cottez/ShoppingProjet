@@ -1,63 +1,72 @@
 package com.example.shoppingprojet.Controleur;
 
-import com.example.shoppingprojet.DAO.CommandeDAO;
+import com.example.shoppingprojet.DAO.LigneCommandeDAOImpl;
 import com.example.shoppingprojet.DAO.CommandeDAOImpl;
-import com.example.shoppingprojet.Modele.ArticlePanier;
-import com.example.shoppingprojet.Modele.ClientSession;
+import com.example.shoppingprojet.Modele.LigneCommande;
 import com.example.shoppingprojet.Modele.Commande;
-
-import javafx.beans.property.SimpleFloatProperty;
+import com.example.shoppingprojet.Modele.ClientSession;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.util.List;
 
 public class HistoriqueController {
 
     @FXML private TableView<Commande> tableCommandes;
-    @FXML private TableColumn<Commande, Integer> colNum;
-    @FXML private TableColumn<Commande, String>  colDate;
-    @FXML private TableColumn<Commande, String>  colHeure;
-    @FXML private TableColumn<Commande, Float>   colTotal;
+    @FXML private TableColumn<Commande,Integer> colNum;
+    @FXML private TableColumn<Commande,String>  colDate;
+    @FXML private TableColumn<Commande,String>  colHeure;
+    @FXML private TableColumn<Commande,Float>   colTotal;
 
-    @FXML private TableView<ArticlePanier> tableLignes;
-    @FXML private TableColumn<ArticlePanier, String> colNomArt;
-    @FXML private TableColumn<ArticlePanier, Integer> colQteArt;
-    @FXML private TableColumn<ArticlePanier, Float>   colTotalLigne;
+    @FXML private TableView<LigneCommande> tableLignes;
+    @FXML private TableColumn<LigneCommande,String> colArticle;
+    @FXML private TableColumn<LigneCommande,Integer> colQuantite;
+    @FXML private TableColumn<LigneCommande,Float> colPrixLigne;
 
     @FXML
     public void initialize() {
-        CommandeDAO dao = new CommandeDAOImpl();
-        var commandes = FXCollections.observableArrayList(
-                dao.getCommandesByClient(ClientSession.getClient().getIdUtilisateur())
+        colNum.setCellValueFactory(c ->
+                new SimpleObjectProperty<>(c.getValue().getIdCommande())
+        );
+        colDate.setCellValueFactory(c ->
+                new SimpleStringProperty(c.getValue().getDateCommande().toString())
+        );
+        colHeure.setCellValueFactory(c ->
+                new SimpleStringProperty(c.getValue().getHeureCommande().toString())
+        );
+        colTotal.setCellValueFactory(c ->
+                new SimpleObjectProperty<>(c.getValue().getMontantTotal())
         );
 
-        colNum.setCellValueFactory(new PropertyValueFactory<>("idCommande"));
-        colDate.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getDateCommande().toString()));
-        colHeure.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getHeureCommande().toString()));
-        colTotal.setCellValueFactory(new PropertyValueFactory<>("montantTotal"));
-
+        // on charge l'historique du client
+        int idClient = ClientSession.getClient().getIdUtilisateur();
+        ObservableList<Commande> commandes = FXCollections
+                .observableArrayList(new CommandeDAOImpl().getCommandesByClient(idClient));
         tableCommandes.setItems(commandes);
 
-        // Quand on sélectionne une commande, on affiche ses lignes
+        // au clic sur une commande, on affiche ses lignes
         tableCommandes.getSelectionModel().selectedItemProperty()
-                .addListener((obs, old, sel) -> {
-                    if (sel != null) {
-                        tableLignes.setItems(
-                                FXCollections.observableArrayList(sel.getArticles())
-                        );
+                .addListener((obs,old,nouv) -> {
+                    if (nouv!=null) {
+                        List<LigneCommande> lignes =
+                                new LigneCommandeDAOImpl().getLignesByCommande(nouv.getIdCommande());
+                        ObservableList<LigneCommande> data =
+                                FXCollections.observableArrayList(lignes);
+                        colArticle.setCellValueFactory(c ->
+                                new SimpleStringProperty(c.getValue().getArticle().getNom()));
+                        colQuantite.setCellValueFactory(c ->
+                                new SimpleObjectProperty<>(c.getValue().getQuantite()));
+                        colPrixLigne.setCellValueFactory(c ->
+                                new SimpleObjectProperty<>(c.getValue().getPrixLigne()));
+                        tableLignes.setItems(data);
+                    } else {
+                        tableLignes.getItems().clear();
                     }
                 });
-
-        colNomArt.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getArticle().getNom()));
-        colQteArt.setCellValueFactory(new PropertyValueFactory<>("quantite"));
-        colTotalLigne.setCellValueFactory(c ->
-                new SimpleFloatProperty(c.getValue().getTotal()).asObject());
     }
 }

@@ -9,7 +9,7 @@ public class ArticleDAOImpl implements ArticleDAO {
 
     private Article ResultatArticle(ResultSet resultats) {
         try {
-            int id = resultats.getInt("ArticleID");
+            int id = resultats.getInt("idArticle");
             int idMarque = resultats.getInt("idMarque");
             String nom = resultats.getString("nom");
             String description = resultats.getString("description");

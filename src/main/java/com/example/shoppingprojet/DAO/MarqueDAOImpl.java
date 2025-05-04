@@ -13,7 +13,7 @@ public class MarqueDAOImpl implements MarqueDAO {
 
     @Override
     public void ajouterMarque(Marque marque) {
-        String sql = "INSERT INTO marques (idMarque, nomMarque) VALUES (?, ?)";
+        String sql = "INSERT INTO marque (idMarque, nomMarque) VALUES (?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, marque.getIdMarque());
@@ -26,7 +26,7 @@ public class MarqueDAOImpl implements MarqueDAO {
 
     @Override
     public void modifierMarque(Marque marque) {
-        String sql = "UPDATE marques SET nomMarque = ? WHERE idMarque = ?";
+        String sql = "UPDATE marque SET nomMarque = ? WHERE idMarque = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, marque.getNomMarque());
@@ -39,7 +39,7 @@ public class MarqueDAOImpl implements MarqueDAO {
 
     @Override
     public void supprimerMarque(int idMarque) {
-        String sql = "DELETE FROM marques WHERE idMarque = ?";
+        String sql = "DELETE FROM marque WHERE idMarque = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idMarque);
@@ -52,7 +52,7 @@ public class MarqueDAOImpl implements MarqueDAO {
     @Override
     public Marque chercherMarqueParNom(String nomMarque) {
         Marque marque = null;
-        String sql = "SELECT idMarque, nomMarque FROM marques WHERE nomMarque = ?";
+        String sql = "SELECT idMarque, nomMarque FROM marque WHERE nomMarque = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, nomMarque);
@@ -71,7 +71,7 @@ public class MarqueDAOImpl implements MarqueDAO {
     @Override
     public ArrayList<Marque> getAllMarques() {
         ArrayList<Marque> marques = new ArrayList<>();
-        String sql = "SELECT idMarque, nomMarque FROM marques";
+        String sql = "SELECT idMarque, nomMarque FROM marque";
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -92,7 +92,7 @@ public class MarqueDAOImpl implements MarqueDAO {
     @Override
     public Marque chercherMarqueById(int idMarque) {
         Marque marque = null;
-        String sql = "SELECT idMarque, nomMarque FROM marques WHERE idMarque = ?";
+        String sql = "SELECT idMarque, nomMarque FROM marque WHERE idMarque = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idMarque);

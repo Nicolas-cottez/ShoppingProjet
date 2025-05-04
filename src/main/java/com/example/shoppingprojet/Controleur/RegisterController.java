@@ -21,6 +21,7 @@ public class RegisterController {
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
     @FXML private Label errorLabel;
+    @FXML private Button backButton;
 
     private final UtilisateurDAO utilisateurDAO = new UtilisateurDAOImpl();
 
@@ -64,4 +65,22 @@ public class RegisterController {
             errorLabel.setText("Erreur lors de l'inscription.");
         }
     }
+
+    @FXML
+    private void goToLogin() {
+        try {
+            Stage stage = (Stage) backButton.getScene().getWindow();
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/com/example/shoppingprojet/login.fxml")
+            );
+            stage.setScene(new Scene(root));
+            stage.setTitle("Connexion");
+            stage.setMaximized(true);     // passe en plein écran
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<BorderPane xmlns="http://javafx.com/javafx/17"
+<BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.shoppingprojet.Controleur.MainController">
 
+    <!-- TOP: your always-visible menu bar -->
     <top>
-        <ToolBar>
-            <Button text="Boutique"    onAction="#showBoutique"/>
-            <Button text="Mon Panier"  onAction="#showPanier"/>
-            <Button text="Historique"  onAction="#showHistorique"/>
-            <Button text="Déconnexion" onAction="#logout"/>
-        </ToolBar>
+        <MenuBar>
+            <Menu text="Boutique">
+                <MenuItem text="Boutique"    onAction="#onShowBoutique"/>
+                <MenuItem text="Mon Panier"  onAction="#onShowPanier"/>
+                <MenuItem text="Historique"  onAction="#onShowHistorique"/>
+                <MenuItem text="Déconnexion" onAction="#onLogout"/>
+            </Menu>
+        </MenuBar>
     </top>
 
+    <!-- CENTER: placeholder pane we will replace at runtime -->
     <center>
-        <AnchorPane fx:id="contentPane"/>
+        <AnchorPane fx:id="centerPane"/>
     </center>
 
 </BorderPane>
-
-
-
-

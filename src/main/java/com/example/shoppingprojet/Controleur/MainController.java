@@ -2,62 +2,58 @@ package com.example.shoppingprojet.Controleur;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
-
-import java.io.IOException;
+import javafx.scene.Parent;
 
 public class MainController {
 
-    @FXML private AnchorPane contentPane;
+    @FXML
+    private AnchorPane centerPane;   // injected from main.fxml
 
-    @FXML public void initialize() {
-        showBoutique();
-    }
-
-    @FXML private void showBoutique() {
-        loadUI("/com/example/shoppingprojet/boutique.fxml");
-    }
-
-    @FXML private void showPanier() {
-        loadUI("/com/example/shoppingprojet/panier.fxml");
-    }
-
-    @FXML private void showHistorique() {
-        loadUI("/com/example/shoppingprojet/historique.fxml");
+    /** called right after FXML is loaded */
+    @FXML
+    public void initialize() {
+        // show the default view on startup
+        try {
+            onShowBoutique();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
-    private void logout() {
-        try {
-            // Récupère la fenêtre courante
-            Stage stage = (Stage) contentPane.getScene().getWindow();
-            // Charge le FXML de la page de login
-            Parent root = FXMLLoader.load(
-                    getClass().getResource("/com/example/shoppingprojet/login.fxml")
-            );
-            // Crée une nouvelle scène et la place dans le stage
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Connexion");
-            stage.show();
-            stage.setMaximized(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void onShowBoutique() throws Exception {
+        swapCenter("/com/example/shoppingprojet/boutique.fxml");
     }
 
-    private void loadUI(String fxml) {
-        try {
-            Node node = FXMLLoader.load(getClass().getResource(fxml));
-            contentPane.getChildren().setAll(node);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @FXML
+    private void onShowPanier() throws Exception {
+        swapCenter("/com/example/shoppingprojet/panier.fxml");
     }
 
+    @FXML
+    private void onShowHistorique() throws Exception {
+        swapCenter("/com/example/shoppingprojet/historique.fxml");
+    }
 
+    @FXML
+    private void onLogout() throws Exception {
+        // you can either swap centerPane to login.fxml
+        // or replace the entire Scene root:
+        Parent loginRoot = FXMLLoader.load(
+                getClass().getResource("/com/example/shoppingprojet/login.fxml")
+        );
+        centerPane.getScene().setRoot(loginRoot);
+    }
+
+    /** helper: load an FXML and place it into the centerPane */
+    private void swapCenter(String fxmlPath) throws Exception {
+        Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
+        centerPane.getChildren().setAll(view);
+        // if you want it to grow to fit:
+        AnchorPane.setTopAnchor(view,    0.0);
+        AnchorPane.setRightAnchor(view,  0.0);
+        AnchorPane.setBottomAnchor(view, 0.0);
+        AnchorPane.setLeftAnchor(view,   0.0);
+    }
 }
