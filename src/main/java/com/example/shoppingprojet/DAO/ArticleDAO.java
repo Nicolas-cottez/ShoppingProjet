@@ -3,6 +3,7 @@ import com.example.shoppingprojet.Modele.Administrateur;
 import com.example.shoppingprojet.Modele.Article;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface ArticleDAO {
     public Article chercherArticleParNom(String nomMarque);
@@ -16,4 +17,6 @@ public interface ArticleDAO {
     public ArrayList<Article> getAllArticlesByPrix(double prixMin, double prixMax);
     public ArrayList<Article> getAllArticlesTriesPrixCroissant(boolean croissant);
     public ArrayList<Article> getAllArticlesTriesPrixDecroissant(boolean decroissant);
+    public ArrayList<Article> getAllArticles();
+    public void decreaseStock(int idArticle, int quantity);
 }

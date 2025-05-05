@@ -1,61 +1,81 @@
 package com.example.shoppingprojet.Controleur;
 
+import com.example.shoppingprojet.Modele.ClientSession;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class MainController {
 
-    @FXML private BorderPane rootPane;
-    @FXML private AnchorPane centerPane;
+    @FXML private AnchorPane contentPane;  // correspond à <AnchorPane fx:id="contentPane"/>
 
     @FXML
     public void initialize() {
-        // On affiche la boutique par défaut
-        showBoutique();
+        showBoutique();  // page par défaut
     }
 
     @FXML
-    private void showBoutique() {
+    public void showBoutique() {
         loadCenter("/com/example/shoppingprojet/boutique.fxml");
     }
 
     @FXML
-    private void showPanier() {
+    public void showPanier() {
         loadCenter("/com/example/shoppingprojet/panier.fxml");
     }
 
     @FXML
-    private void showHistorique() {
+    public void showHistorique() {
         loadCenter("/com/example/shoppingprojet/historique.fxml");
     }
 
     @FXML
-    private void logout() {
-        // Simplement retourner à la login view
+    public void showCheckout() {
+        loadCenter("/com/example/shoppingprojet/checkout.fxml");
+    }
+
+    @FXML
+    public void handleLogout() {
+        // 1) Vider les informations de session
+        ClientSession.setClient(null);
+        ClientSession.setCommande(null);
+
+        // 2) Recharger l'écran de connexion
         try {
-            Stage stage = (Stage) rootPane.getScene().getWindow();
-            Parent login = FXMLLoader.load(getClass().getResource("/com/example/shoppingprojet/login.fxml"));
-            stage.getScene().setRoot(login);
+            Stage stage = (Stage) /* récupère la fenêtre courante */
+                    // si vous étiez dans un AnchorPane nommé contentPane :
+                    contentPane.getScene().getWindow();
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/com/example/shoppingprojet/login.fxml")
+            );
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
             stage.setTitle("Connexion");
+            stage.setMaximized(true); // ou false si vous préférez
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * Charge un fichier FXML dans la partie centrale du BorderPane.
-     */
     private void loadCenter(String fxmlPath) {
         try {
-            Node view = FXMLLoader.load(getClass().getResource(fxmlPath));
-            rootPane.setCenter(view);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Node view = loader.load();
+
+            // Passe-toi-même en tant que contrôleur parent si besoin :
+            Object ctl = loader.getController();
+            if (ctl instanceof ControlledScreen) {
+                ((ControlledScreen)ctl).setMainController(this);
+            }
+
+            contentPane.getChildren().setAll(view);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,38 +1,73 @@
 package com.example.shoppingprojet.Controleur;
 
+import com.example.shoppingprojet.DAO.ArticleDAO;
+import com.example.shoppingprojet.DAO.ArticleDAOImpl;
+import com.example.shoppingprojet.DAO.CommandeDAO;
+import com.example.shoppingprojet.DAO.CommandeDAOImpl;
+import com.example.shoppingprojet.Modele.ArticlePanier;
+import com.example.shoppingprojet.Modele.ClientSession;
+import com.example.shoppingprojet.Modele.Commande;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.control.*;
 
-import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 
-public class CheckoutController {
-    @FXML private TextArea livraisonField, facturationField;
+public class CheckoutController implements ControlledScreen {
+    private MainController mainController;
+
+    @FXML private TextArea livraisonField;
+    @FXML private TextArea facturationField;
     @FXML private ComboBox<String> paiementBox;
-    @FXML private TextField cardNumberField, expField, cvvField;
-    @FXML private Button annulerButton, confirmerButton;
+    @FXML private Button annulerButton;
+    @FXML private Button confirmerButton;
 
-    @FXML public void initialize() {
-        annulerButton.setOnAction(e -> injectCenter("panier.fxml"));
+    private final CommandeDAO commandeDAO = new CommandeDAOImpl();
+    private final ArticleDAO   articleDAO  = new ArticleDAOImpl();
+
+    @FXML
+    public void initialize() {
+        paiementBox.getItems().addAll("Carte bancaire", "PayPal", "Chèque");
+
+        annulerButton.setOnAction(e -> mainController.showPanier());
+
         confirmerButton.setOnAction(e -> {
-            // votre logique de validation → retour en boutique
-            injectCenter("boutique.fxml");
+            // 1) Récupérer et mettre à jour la commande
+            Commande currentCmd = ClientSession.getCommande();
+            currentCmd.setDateCommande(LocalDate.now());
+            currentCmd.setHeureCommande(LocalTime.now());
+            float total = (float) commandeDAO.calculerPrixCommande(currentCmd);
+            currentCmd.setMontantTotal(total);
+
+            // 2) Enregistrer la commande
+            commandeDAO.ajouterCommande(currentCmd);
+
+            // 3) Décrémenter le stock pour chaque ligne de commande
+            for (ArticlePanier ap : currentCmd.getArticles()) {
+                int idArt = ap.getArticle().getIdArticle();
+                int qte   = ap.getQuantite();
+                articleDAO.decreaseStock(idArt, qte);
+            }
+
+            // 4) Vider le panier (nouvelle commande vide)
+            Commande newCmd = new Commande(
+                    0,
+                    LocalDate.now(),
+                    LocalTime.now(),
+                    0f,
+                    ClientSession.getClient(),
+                    new ArrayList<>()
+            );
+            ClientSession.setCommande(newCmd);
+
+            // 5) Retourner à la boutique
+            mainController.showBoutique();
         });
     }
 
-    private void injectCenter(String fxml) {
-        try {
-            Parent view = FXMLLoader.load(getClass().getResource(
-                    "/com/example/shoppingprojet/" + fxml));
-            BorderPane root = (BorderPane) livraisonField.getScene().getRoot();
-            root.setCenter(view);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
     }
 }

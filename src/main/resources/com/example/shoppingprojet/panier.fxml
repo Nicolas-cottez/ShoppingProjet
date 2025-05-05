@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.shoppingprojet.Controleur.PanierController">
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.shoppingprojet.Controleur.PanierController"
+      spacing="10">
     <children>
-        <VBox AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10"
-              AnchorPane.rightAnchor="10" AnchorPane.bottomAnchor="10" spacing="20">
-            <TableView fx:id="tablePanier" prefHeight="300">
-                <columns>
-                    <TableColumn fx:id="colArticle"      text="Article"      prefWidth="200"/>
-                    <TableColumn fx:id="colQuantite"     text="Quantité"     prefWidth="100"/>
-                    <TableColumn fx:id="colPrixUnitaire" text="Prix Unitaire" prefWidth="120"/>
-                    <TableColumn fx:id="colPrixTotal"    text="Prix Total"    prefWidth="120"/>
-                </columns>
-            </TableView>
-            <HBox spacing="10">
+        <TableView fx:id="tablePanier" prefWidth="600" prefHeight="400" layoutX="10" layoutY="10">
+            <columns>
+                <TableColumn fx:id="colArticle"    text="Article"        prefWidth="200"/>
+                <TableColumn fx:id="colQuantite"   text="Quantité"       prefWidth="100"/>
+                <TableColumn fx:id="colPrixUnitaire" text="Prix Unitaire" prefWidth="150"/>
+                <TableColumn fx:id="colPrixTotal"  text="Prix Total"     prefWidth="150"/>
+            </columns>
+        </TableView>
 
-                <Button fx:id="passerCommandeButton" text="Passer commande" />
-            </HBox>
-        </VBox>
+        <!-- CE SONT CES LIGNES QUI MANQUAIENT -->
+        <Button fx:id="retourButton"
+                text="Retour Boutique"
+                layoutX="10" layoutY="420"
+                onAction="#handleRetour"/>
+
+        <Button fx:id="passerCommandeButton"
+                text="Passer Commande"
+                layoutX="150" layoutY="420"
+                onAction="#handlePasserCommande"/>
     </children>
-</AnchorPane>
+</VBox>

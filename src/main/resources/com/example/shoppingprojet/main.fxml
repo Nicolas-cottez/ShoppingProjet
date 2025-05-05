@@ -2,26 +2,31 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="rootPane"
+<BorderPane fx:id="borderPane"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.shoppingprojet.Controleur.MainController">
 
-    <!-- EN HAUT : MenuBar -->
     <top>
         <MenuBar>
             <Menu text="Navigation">
-                <MenuItem text="Boutique"   onAction="#showBoutique"/>
-                <MenuItem text="Mon Panier" onAction="#showPanier"/>
-                <MenuItem text="Historique" onAction="#showHistorique"/>
-                <SeparatorMenuItem/>
-                <MenuItem text="Déconnexion" onAction="#logout"/>
+                <items>
+                    <MenuItem text="Boutique"    onAction="#showBoutique"/>
+                    <MenuItem text="Mon Panier"  onAction="#showPanier"/>
+                    <MenuItem text="Historique"  onAction="#showHistorique"/>
+                </items>
+            </Menu>
+            <Menu text="Compte">
+                <items>
+                    <MenuItem text="Déconnexion" onAction="#handleLogout"/>
+                </items>
             </Menu>
         </MenuBar>
     </top>
 
-    <!-- AU CENTRE : zone vide qu’on remplacera -->
+    <!-- c’est ici qu’on injecte les vues -->
+    <!-- soit tu remplaces tout le center -->
     <center>
-        <AnchorPane fx:id="centerPane"/>
+        <AnchorPane fx:id="contentPane"/>
     </center>
 
 </BorderPane>

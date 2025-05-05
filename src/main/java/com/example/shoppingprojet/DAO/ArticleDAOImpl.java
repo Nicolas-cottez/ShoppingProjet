@@ -3,6 +3,7 @@ package com.example.shoppingprojet.DAO;
 import com.example.shoppingprojet.Modele.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class ArticleDAOImpl implements ArticleDAO {
@@ -204,4 +205,53 @@ public class ArticleDAOImpl implements ArticleDAO {
     public ArrayList<Article> getAllArticlesTriesPrixDecroissant(boolean decroissant) {
         return getAllArticlesTriesPrixCroissant(!decroissant);
     }
+
+    @Override
+    public ArrayList<Article> getAllArticles() {
+        ArrayList<Article> listeArticles = new ArrayList<>();
+        String sql =
+                "SELECT a.idArticle, a.nom, a.prixUnitaire, a.idMarque, a.description, a.stock, a.imageURL, m.nomMarque " +
+                        "FROM Article a " +
+                        "JOIN Marque m ON a.idMarque = m.idMarque";
+        try (Connection connexion = DBConnection.getConnection();
+             Statement stmt = connexion.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Article art = new Article(
+                        rs.getInt("idArticle"),
+                        rs.getInt("idMarque"),         // colonne de a
+                        rs.getString("nom"),
+                        rs.getString("description"),
+                        rs.getFloat("prixUnitaire"),
+                        rs.getInt("stock"),
+                        rs.getString("imageURL")
+                );
+                // on injecte le nom de la marque
+                art.setNomMarque(rs.getString("nomMarque"));
+                listeArticles.add(art);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return listeArticles;
+    }
+    @Override
+    public void decreaseStock(int idArticle, int quantity) {
+        String sql = """
+            UPDATE article
+               SET stock = stock - ?
+             WHERE idArticle = ?
+        """;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, quantity);
+            ps.setInt(2, idArticle);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

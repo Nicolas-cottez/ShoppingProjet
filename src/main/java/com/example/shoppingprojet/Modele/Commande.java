@@ -31,10 +31,27 @@ public class Commande {
     public float getMontantTotal() { return montantTotal; }
     public Client getClient() { return client; }
     public List<ArticlePanier> getArticles() { return articles; }
+    public void setDateCommande(LocalDate date) {
+        this.dateCommande = date;
+    }
+    public void setHeureCommande(LocalTime time) {
+        this.heureCommande = time;
+    }
+    public void setMontantTotal(float montant) {
+        this.montantTotal = montant;
+    }
 
     public void ajouterArticle(Article article, int quantite) {
-        ArticlePanier articlePanier = new ArticlePanier(article, quantite);
-        articles.add(articlePanier);
+        // 1) cherche si l'article est déjà dans le panier
+        for (ArticlePanier ap : articles) {
+            if (ap.getArticle().getIdArticle() == article.getIdArticle()) {
+                // 2) si oui, incrémente simplement la quantité
+                ap.setQuantite(ap.getQuantite() + quantite);
+                return;
+            }
+        }
+        // 3) sinon, on ajoute une nouvelle ligne
+        articles.add(new ArticlePanier(article, quantite));
     }
 
 }
