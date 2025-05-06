@@ -112,4 +112,39 @@ public class LigneCommandeDAOImpl implements LigneCommandeDAO {
         }
         return liste;
     }
+
+    @Override
+    public List<LigneCommande> getByCommande(int idCommande) {
+        List<LigneCommande> lignes = new ArrayList<>();
+        String sql = """
+            SELECT lc.idCommande, lc.idArticle, lc.quantite, lc.prixLigne,
+                   a.nom, a.description, a.prixUnitaire, a.stock, a.idMarque, a.imageURL
+              FROM ligne_commande lc
+              JOIN article a ON lc.idArticle = a.idArticle
+             WHERE lc.idCommande = ?
+        """;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idCommande);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Article art = new Article(
+                            rs.getInt("idArticle"),
+                            rs.getInt("idMarque"),
+                            rs.getString("nom"),
+                            rs.getString("description"),
+                            rs.getFloat("prixUnitaire"),
+                            rs.getInt("stock"),
+                            rs.getString("imageURL")
+                    );
+                    int qte = rs.getInt("quantite");
+                    float prixLigne = rs.getFloat("prixLigne");
+                    lignes.add(new LigneCommande(idCommande, art, qte, prixLigne));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lignes;
+    }
 }

@@ -14,7 +14,8 @@
                 <TableColumn fx:id="colArticle"    text="Article"        prefWidth="200"/>
                 <TableColumn fx:id="colQuantite"   text="Quantité"       prefWidth="100"/>
                 <TableColumn fx:id="colPrixUnitaire" text="Prix Unitaire" prefWidth="150"/>
-                <TableColumn fx:id="colPrixTotal"  text="Prix Total"     prefWidth="150"/>
+                <TableColumn fx:id="colPrixAvant"     text="Total Avant" prefWidth="150"/>
+                <TableColumn fx:id="colPrixApres"     text="Total Après" prefWidth="150"/>
             </columns>
         </TableView>
 

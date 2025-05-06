@@ -26,4 +26,5 @@ public interface LigneCommandeDAO {
      * @return liste de LigneCommande
      */
     List<LigneCommande> getLignesByCommande(int idCommande);
+    List<LigneCommande> getByCommande(int idCommande);
 }
