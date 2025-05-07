@@ -10,16 +10,16 @@ public class Commande {
     private LocalDate dateCommande;
     private LocalTime heureCommande;
     private float montantTotal;
-    private Client client;
+    private Utilisateur user;
     private List<ArticlePanier> articles;
 
     public Commande(int idCommande, LocalDate dateCommande, LocalTime heureCommande,
-                    float montantTotal, Client client, List<ArticlePanier> articles) {
+                    float montantTotal, Utilisateur user, List<ArticlePanier> articles) {
         this.idCommande = idCommande;
         this.dateCommande = dateCommande;
         this.heureCommande = heureCommande;
         this.montantTotal = montantTotal;
-        this.client = client;
+        this.user = user;
         this.articles = articles != null ? articles : new ArrayList<>();
     }
     public void setIdCommande(int idCommande) {
@@ -29,7 +29,7 @@ public class Commande {
     public LocalDate getDateCommande() { return dateCommande; }
     public LocalTime getHeureCommande() { return heureCommande; }
     public float getMontantTotal() { return montantTotal; }
-    public Client getClient() { return client; }
+    public Utilisateur getUtilisateur() { return user; }
     public List<ArticlePanier> getArticles() { return articles; }
     public void setDateCommande(LocalDate date) {
         this.dateCommande = date;

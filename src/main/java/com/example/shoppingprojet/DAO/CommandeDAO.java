@@ -13,5 +13,5 @@ public interface CommandeDAO {
     public Commande rechercheCommande(int idCommande);
     public Commande rechercheCommandeParDate(LocalDate date);
     public double calculerPrixCommande(Commande commande);
-    List<Commande> getCommandesByClient(int idClient);
+    List<Commande> getCommandesByUtilisateur(int idUtilisateur);
 }

@@ -1,12 +1,7 @@
 package com.example.shoppingprojet.Controleur;
 
-import com.example.shoppingprojet.DAO.ArticleDAO;
-import com.example.shoppingprojet.DAO.ArticleDAOImpl;
-import com.example.shoppingprojet.DAO.CommandeDAO;
-import com.example.shoppingprojet.DAO.CommandeDAOImpl;
-import com.example.shoppingprojet.Modele.ArticlePanier;
-import com.example.shoppingprojet.Modele.ClientSession;
-import com.example.shoppingprojet.Modele.Commande;
+import com.example.shoppingprojet.DAO.*;
+import com.example.shoppingprojet.Modele.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -34,7 +29,7 @@ public class CheckoutController implements ControlledScreen {
 
         confirmerButton.setOnAction(e -> {
             // 1) Récupérer et mettre à jour la commande
-            Commande currentCmd = ClientSession.getCommande();
+            Commande currentCmd = UtilisateurSession.getCommande();
             currentCmd.setDateCommande(LocalDate.now());
             currentCmd.setHeureCommande(LocalTime.now());
             float total = (float) commandeDAO.calculerPrixCommande(currentCmd);
@@ -56,10 +51,10 @@ public class CheckoutController implements ControlledScreen {
                     LocalDate.now(),
                     LocalTime.now(),
                     0f,
-                    ClientSession.getClient(),
+                    UtilisateurSession.getUtilisateur(),
                     new ArrayList<>()
             );
-            ClientSession.setCommande(newCmd);
+            UtilisateurSession.setCommande(newCmd);
 
             // 5) Retourner à la boutique
             mainController.showBoutique();

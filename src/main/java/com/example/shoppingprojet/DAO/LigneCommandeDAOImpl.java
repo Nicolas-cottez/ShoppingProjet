@@ -11,11 +11,17 @@ import java.util.List;
  */
 public class LigneCommandeDAOImpl implements LigneCommandeDAO {
 
-    /** Mappe un ResultSet en LigneCommande */
     private LigneCommande map(ResultSet rs) throws SQLException {
         int idCommande  = rs.getInt("idCommande");
-        int articleId   = rs.getInt("idArticle");
-        Article article = new ArticleDAOImpl().chercherArticleParId(articleId);
+        Article article = new Article(
+                rs.getInt("idArticle"),
+                rs.getInt("idMarque"),
+                rs.getString("nom"),
+                rs.getString("description"),
+                rs.getFloat("prixUnitaire"),
+                rs.getInt("stock"),
+                rs.getString("imageURL")
+        );
         int quantite    = rs.getInt("quantite");
         float prixLigne = rs.getFloat("prixLigne");
         return new LigneCommande(idCommande, article, quantite, prixLigne);
@@ -111,5 +117,40 @@ public class LigneCommandeDAOImpl implements LigneCommandeDAO {
             e.printStackTrace();
         }
         return liste;
+    }
+
+    @Override
+    public List<LigneCommande> getByCommande(int idCommande) {
+        List<LigneCommande> lignes = new ArrayList<>();
+        String sql = """
+            SELECT lc.idCommande, lc.idArticle, lc.quantite, lc.prixLigne,
+                   a.nom, a.description, a.prixUnitaire, a.stock, a.idMarque, a.imageURL
+              FROM ligne_commande lc
+              JOIN article a ON lc.idArticle = a.idArticle
+             WHERE lc.idCommande = ?
+        """;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idCommande);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Article art = new Article(
+                            rs.getInt("idArticle"),
+                            rs.getInt("idMarque"),
+                            rs.getString("nom"),
+                            rs.getString("description"),
+                            rs.getFloat("prixUnitaire"),
+                            rs.getInt("stock"),
+                            rs.getString("imageURL")
+                    );
+                    int qte = rs.getInt("quantite");
+                    float prixLigne = rs.getFloat("prixLigne");
+                    lignes.add(new LigneCommande(idCommande, art, qte, prixLigne));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lignes;
     }
 }

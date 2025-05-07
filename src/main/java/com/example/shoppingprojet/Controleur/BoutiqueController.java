@@ -1,10 +1,7 @@
 package com.example.shoppingprojet.Controleur;
+import com.example.shoppingprojet.DAO.*;
+import com.example.shoppingprojet.Modele.*;
 
-import com.example.shoppingprojet.DAO.ArticleDAO;
-import com.example.shoppingprojet.DAO.ArticleDAOImpl;
-import com.example.shoppingprojet.Modele.Article;
-import com.example.shoppingprojet.Modele.ArticlePanier;
-import com.example.shoppingprojet.Modele.ClientSession;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -50,7 +47,7 @@ public class BoutiqueController implements ControlledScreen {
         // quantité déjà présente dans le panier
         colQuantiteCart.setCellValueFactory(c -> {
             int idArt = c.getValue().getIdArticle();
-            int qte = ClientSession.getCommande().getArticles().stream()
+            int qte = UtilisateurSession.getCommande().getArticles().stream()
                     .filter(ap -> ap.getArticle().getIdArticle() == idArt)
                     .map(ArticlePanier::getQuantite)
                     .findFirst()
@@ -67,7 +64,7 @@ public class BoutiqueController implements ControlledScreen {
                     {
                         btn.setOnAction(e -> {
                             Article art = getTableView().getItems().get(getIndex());
-                            ClientSession.getCommande().ajouterArticle(art, 1);
+                            UtilisateurSession.getCommande().ajouterArticle(art, 1);
                             tableArticles.refresh();
                         });
                     }

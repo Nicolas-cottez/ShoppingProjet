@@ -2,6 +2,8 @@ package com.example.shoppingprojet.Modele;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Utilisateur {
     private int idUtilisateur;
@@ -11,10 +13,11 @@ public class Utilisateur {
     private String motDePasse;
     private LocalDate dateInscription;
     private LocalTime heureInscription;
+    private String adressePostal;
+    private List<Commande> commandes;
     private String role;
 
-
-    public Utilisateur(int idUtilisateur, String nom, String prenom, String email, String motDePasse, LocalDate dateInscription, LocalTime heureInscription) {
+    public Utilisateur(int idUtilisateur, String nom, String prenom, String email, String motDePasse, LocalDate dateInscription, LocalTime heureInscription,String adressePostal,List<Commande> commandes,String role) {
         this.idUtilisateur = idUtilisateur;
         this.nom = nom;
         this.prenom = prenom;
@@ -22,6 +25,9 @@ public class Utilisateur {
         this.motDePasse = motDePasse;
         this.dateInscription = dateInscription;
         this.heureInscription = heureInscription;
+        this.adressePostal = adressePostal;
+        this.commandes = commandes != null ? commandes : new ArrayList<>();
+        this.role = role;
     }
 
     public int getIdUtilisateur() { return idUtilisateur; }
@@ -32,7 +38,7 @@ public class Utilisateur {
     public LocalDate getDateInscription() { return dateInscription; }
     public LocalTime getHeureInscription() { return heureInscription; }
     public String getRole() {return role;}
-
-    public void setRole(String role) {this.role = role;}
-
+    public void setRole(String role) { this.role = role; }
+    public String getAdressePostal() { return adressePostal; }
+    public List<Commande> getCommandes() { return commandes; }
 }

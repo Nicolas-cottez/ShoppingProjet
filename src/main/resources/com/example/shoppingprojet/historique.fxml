@@ -3,16 +3,40 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.shoppingprojet.Controleur.HistoriqueController"
-      spacing="10">
-    <TableView fx:id="tableHistorique">
-        <columns>
-            <TableColumn fx:id="colArticle" text="Article"/>
-            <TableColumn fx:id="colIdCommande" text="ID"/>
-            <TableColumn fx:id="colDate"       text="Date"/>
-            <TableColumn fx:id="colHeure"      text="Heure"/>
-            <TableColumn fx:id="colMontant"    text="Montant"/>
-        </columns>
-    </TableView>
-</VBox>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Label?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.shoppingprojet.Controleur.HistoriqueController">
+
+    <top>
+        <Label text="Historique des commandes"
+               style="-fx-font-size:18; -fx-padding:10"/>
+    </top>
+
+    <center>
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <!-- Table des commandes -->
+            <TableView fx:id="tableHistorique" prefHeight="200">
+                <columns>
+                    <TableColumn fx:id="colIdCommande" text="ID"/>
+                    <TableColumn fx:id="colDate"       text="Date"/>
+                    <TableColumn fx:id="colHeure"      text="Heure"/>
+                    <TableColumn fx:id="colMontant"    text="Montant"/>
+                </columns>
+            </TableView>
+
+            <!-- Table de détail -->
+            <Label text="Détail de la commande sélectionnée"
+                   style="-fx-font-size:14"/>
+            <TableView fx:id="tableDetail" prefHeight="150">
+                <columns>
+                    <TableColumn fx:id="colArticleDetail"   text="Article"/>
+                    <TableColumn fx:id="colQteDetail"       text="Quantité"/>
+                    <TableColumn fx:id="colPrixDetail"      text="Prix ligne"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>
+

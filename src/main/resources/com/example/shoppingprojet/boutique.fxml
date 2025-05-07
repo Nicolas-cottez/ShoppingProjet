@@ -1,24 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.VBox?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.shoppingprojet.Controleur.BoutiqueController"
-      spacing="10"
-      alignment="TOP_CENTER"
-      prefWidth="800" prefHeight="600">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 
-    <TableView fx:id="tableArticles" prefWidth="780" prefHeight="580">
-        <columns>
-            <TableColumn fx:id="colNom"         text="Nom"        prefWidth="150"/>
-            <TableColumn fx:id="colDescription" text="Description" prefWidth="250"/>
-            <TableColumn fx:id="colPrix"        text="Prix (€)"   prefWidth="80"/>
-            <TableColumn fx:id="colStock"       text="Stock"      prefWidth="80"/>
-            <TableColumn fx:id="colMarque"      text="Marque"     prefWidth="100"/>
-            <TableColumn fx:id="colQuantiteCart" text="Quantité" prefWidth="100"/>
-            <TableColumn fx:id="colAction"      text="Action"     prefWidth="120"/>
-        </columns>
-    </TableView>
 
-</VBox>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="600.0" spacing="10.0" stylesheets="@styles.css">
+         <padding>
+            <Insets left="20.0" />
+         </padding>
+         <children>
+            <Button mnemonicParsing="false" prefHeight="57.0" prefWidth="122.0" text="Mon profil" />
+            <Button mnemonicParsing="false" prefHeight="58.0" prefWidth="94.0" text="Accueil" />
+            <Button mnemonicParsing="false" prefHeight="58.0" prefWidth="94.0" text="Catégories" />
+         </children>
+      </HBox>
+      <ImageView fitHeight="124.0" fitWidth="125.0" layoutX="221.0" layoutY="138.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../../../../../../../Downloads/image-removebg-preview%20(5).png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="133.0" fitWidth="125.0" layoutX="41.0" layoutY="138.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../../../../../../../Downloads/image-removebg-preview%20(4).png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="124.0" fitWidth="131.0" layoutX="405.0" layoutY="158.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../../../../../../../Downloads/image-removebg-preview%20(6).png" />
+         </image>
+      </ImageView>
+      <Label layoutX="51.0" layoutY="279.0" text="Casquette poussin" />
+   </children>
+</AnchorPane>

@@ -7,19 +7,19 @@ import java.util.ArrayList;
 /**
  * Gère la session du client et sa commande en cours (panier).
  */
-public class ClientSession {
-    private static Client client;
+public class UtilisateurSession {
+    private static Utilisateur user;
     private static Commande commande;
 
     /** Appelé au login pour fixer le client et initialiser un panier vide. */
-    public static void setClient(Client c) {
-        client = c;
+    public static void setUtilisateur(Utilisateur u) {
+        user = u;
         resetCommande();
     }
 
     /** Retourne le client connecté. */
-    public static Client getClient() {
-        return client;
+    public static Utilisateur getUtilisateur() {
+        return user;
     }
 
     /** Retourne la commande en cours. Si elle n'existe pas, on en crée une nouvelle. */
@@ -48,7 +48,7 @@ public class ClientSession {
                 LocalDate.now(),
                 LocalTime.now(),
                 0f,
-                client,
+                user,
                 new ArrayList<>()
         );
     }
