@@ -20,10 +20,11 @@ public class CommandeDAOImpl implements CommandeDAO {
             LocalTime heureCommande = (heureCommandeSql != null)
                     ? heureCommandeSql.toLocalTime() : null;
             float montantTotal = rs.getFloat("montantTotal");
+            String adresseLivraison = rs.getString("adresseLivraison");
 
-            // 1) Récupérer le client (si besoin, implémente findById dans ClientDAO)
-            Client client = null;
-            // ... ou leave client à null si tu le charges ailleurs
+            // 1) Récupérer le user (si besoin, implémente findById dans userDAO)
+            Utilisateur user = null;
+            // ... ou leave user à null si tu le charges ailleurs
 
             // 2) Charger les lignes de commande en ArticlePanier
             List<ArticlePanier> paniers = new ArrayList<>();
@@ -59,7 +60,8 @@ public class CommandeDAOImpl implements CommandeDAO {
                     dateCommande,
                     heureCommande,
                     montantTotal,
-                    client,
+                    adresseLivraison,
+                    user,
                     paniers
             );
         } catch (SQLException e) {
@@ -72,23 +74,26 @@ public class CommandeDAOImpl implements CommandeDAO {
     @Override
     public int ajouterCommande(Commande commande) {
         String sql = """
-        INSERT INTO commande
-          (dateCommande, heureCommande, montantTotal, idClient)
-        VALUES (?, ?, ?, ?)
-        """;
+    INSERT INTO commande
+      (dateCommande, heureCommande, montantTotal, adresseLivraison, idUtilisateur)
+    VALUES (?, ?, ?, ?, ?)
+    """;
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setObject(1, commande.getDateCommande());
             ps.setObject(2, commande.getHeureCommande());
             ps.setFloat( 3, commande.getMontantTotal());
-            ps.setInt(   4, commande.getClient().getIdUtilisateur());
+            // 4 = adresse de livraison
+            ps.setString(4, commande.getAdresseLivraison());
+            // 5 = id de l’utilisateur
+            ps.setInt(   5, commande.getUtilisateur().getIdUtilisateur());
 
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
                     int id = keys.getInt(1);
-                    commande.setIdCommande(id);         // ajouter un setter dans Commande
+                    commande.setIdCommande(id);
                     return id;
                 }
             }
@@ -101,19 +106,34 @@ public class CommandeDAOImpl implements CommandeDAO {
 
     @Override
     public void modifierCommande(Commande commande) {
-        String sql = "UPDATE commande SET dateCommande = ?, heureCommande = ?, montantTotal = ?, idClient = ? WHERE idCommande = ?";
+        String sql = """
+    UPDATE commande
+       SET dateCommande      = ?,
+           heureCommande     = ?,
+           montantTotal      = ?,
+           adresseLivraison  = ?,
+           idUtilisateur     = ?
+     WHERE idCommande = ?
+    """;
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setObject(1, commande.getDateCommande());
             pstmt.setObject(2, commande.getHeureCommande());
             pstmt.setFloat(3, commande.getMontantTotal());
-            pstmt.setInt(4, commande.getClient().getIdUtilisateur());
-            pstmt.setInt(5, commande.getIdCommande());
+            // 4 = adresse de livraison
+            pstmt.setString(4, commande.getAdresseLivraison());
+            // 5 = id de l’utilisateur
+            pstmt.setInt(   5, commande.getUtilisateur().getIdUtilisateur());
+            // 6 = id de la commande à modifier
+            pstmt.setInt(   6, commande.getIdCommande());
+
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void supprimerCommande(int idCommande) {
@@ -210,16 +230,16 @@ public class CommandeDAOImpl implements CommandeDAO {
         return prixTotal;
     }
     @Override
-    public List<Commande> getCommandesByClient(int idClient) {
+    public List<Commande> getCommandesByUtilisateur(int idUtilisateur) {
         List<Commande> commandes = new ArrayList<>();
         String sql = """
-        SELECT idCommande, dateCommande, heureCommande, montantTotal
+        SELECT idCommande, dateCommande, heureCommande, montantTotal, adresseLivraison
           FROM commande
-         WHERE idClient = ?
+         WHERE idUtilisateur = ?
     """;
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, idClient);
+            ps.setInt(1, idUtilisateur);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     commandes.add(ResultatCommande(rs));  // charge aussi les ArticlePanier

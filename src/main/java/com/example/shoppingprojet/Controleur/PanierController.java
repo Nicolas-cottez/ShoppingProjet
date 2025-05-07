@@ -2,10 +2,8 @@ package com.example.shoppingprojet.Controleur;
 
 import com.example.shoppingprojet.DAO.RemiseDAO;
 import com.example.shoppingprojet.DAO.RemiseDAOImpl;
-import com.example.shoppingprojet.Modele.ArticlePanier;
-import com.example.shoppingprojet.Modele.Commande;
-import com.example.shoppingprojet.Modele.ClientSession;
-import com.example.shoppingprojet.Modele.Remise;
+import com.example.shoppingprojet.Modele.*;
+
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -54,7 +52,7 @@ public class PanierController implements ControlledScreen {
         });
 
         // Charger les lignes
-        Commande cmd = ClientSession.getCommande();
+        Commande cmd = UtilisateurSession.getCommande();
         tablePanier.setItems(FXCollections.observableArrayList(cmd.getArticles()));
     }
 

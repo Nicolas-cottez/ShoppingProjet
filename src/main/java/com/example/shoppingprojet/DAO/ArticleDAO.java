@@ -1,9 +1,7 @@
 package com.example.shoppingprojet.DAO;
-import com.example.shoppingprojet.Modele.Administrateur;
 import com.example.shoppingprojet.Modele.Article;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public interface ArticleDAO {
     public Article chercherArticleParNom(String nomMarque);

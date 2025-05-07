@@ -10,17 +10,20 @@ public class Commande {
     private LocalDate dateCommande;
     private LocalTime heureCommande;
     private float montantTotal;
-    private Client client;
+    private Utilisateur user;
     private List<ArticlePanier> articles;
+    private String adresseLivraison;
 
     public Commande(int idCommande, LocalDate dateCommande, LocalTime heureCommande,
-                    float montantTotal, Client client, List<ArticlePanier> articles) {
+                    float montantTotal, String adresseLivraison,Utilisateur user, List<ArticlePanier> articles) {
         this.idCommande = idCommande;
         this.dateCommande = dateCommande;
         this.heureCommande = heureCommande;
         this.montantTotal = montantTotal;
-        this.client = client;
+        this.adresseLivraison = adresseLivraison;
+        this.user = user;
         this.articles = articles != null ? articles : new ArrayList<>();
+        
     }
     public void setIdCommande(int idCommande) {
         this.idCommande = idCommande;
@@ -29,7 +32,7 @@ public class Commande {
     public LocalDate getDateCommande() { return dateCommande; }
     public LocalTime getHeureCommande() { return heureCommande; }
     public float getMontantTotal() { return montantTotal; }
-    public Client getClient() { return client; }
+    public Utilisateur getUtilisateur() { return user; }
     public List<ArticlePanier> getArticles() { return articles; }
     public void setDateCommande(LocalDate date) {
         this.dateCommande = date;
@@ -40,7 +43,12 @@ public class Commande {
     public void setMontantTotal(float montant) {
         this.montantTotal = montant;
     }
-
+    public String getAdresseLivraison() {
+        return adresseLivraison;
+    }
+    public void setAdresseLivraison(String adresseLivraison) {
+        this.adresseLivraison = adresseLivraison;
+    }
     public void ajouterArticle(Article article, int quantite) {
         // 1) cherche si l'article est déjà dans le panier
         for (ArticlePanier ap : articles) {

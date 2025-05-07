@@ -8,12 +8,12 @@ public interface UtilisateurDAO {
     boolean checkLogin(String email, String password);
     Utilisateur findByEmailAndPassword(String email, String password);
     boolean createUser(Utilisateur utilisateur);
-
-    //public ArrayList<Article> getAllArticles();
-    //public ArrayList<Marque> getAllMarques();
-
-    //public Article chercherArticle(int id);
-
-    //public Marque chercherMarque(int id);
+    public ArrayList<Utilisateur> getAllUtilisateur();
+    //Pour l'administrateur
+    public void ajouterUtilisateur(Utilisateur utilisateur);
+    public void modifierUtilisateur(Utilisateur utilisateur);
+    public void supprimerUtilisateur(int idUtilisateur);
+    public Utilisateur rechercherUtilisateur(int idUtilisateur);
+    public Utilisateur rechercherUtilisateurParNom(String nomUtilisateur);
 
 }

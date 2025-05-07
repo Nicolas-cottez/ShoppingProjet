@@ -4,9 +4,7 @@ import com.example.shoppingprojet.DAO.CommandeDAO;
 import com.example.shoppingprojet.DAO.CommandeDAOImpl;
 import com.example.shoppingprojet.DAO.LigneCommandeDAO;
 import com.example.shoppingprojet.DAO.LigneCommandeDAOImpl;
-import com.example.shoppingprojet.Modele.Commande;
-import com.example.shoppingprojet.Modele.LigneCommande;
-import com.example.shoppingprojet.Modele.ClientSession;
+import com.example.shoppingprojet.Modele.*;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -46,10 +44,17 @@ public class HistoriqueController implements ControlledScreen {
         colMontant.setCellValueFactory(c ->
                 new SimpleFloatProperty(c.getValue().getMontantTotal()).asObject());
 
-        int idClient = ClientSession.getClient().getIdUtilisateur();
-        tableHistorique.setItems(FXCollections.observableArrayList(
-                commandeDAO.getCommandesByClient(idClient)
-        ));
+        Utilisateur utilisateurConnecte = UtilisateurSession.getUtilisateur();
+        if (utilisateurConnecte != null) {
+            int idUtilisateur = utilisateurConnecte.getIdUtilisateur();
+            tableHistorique.setItems(FXCollections.observableArrayList(
+                    commandeDAO.getCommandesByUtilisateur(idUtilisateur)
+            ));
+        } else {
+            // Gérer le cas où l'utilisateur connecté est null (e.g., redirection vers la page de connexion)
+            System.err.println("Utilisateur non connecté.");
+            // Vous pourriez afficher un message à l'utilisateur ou le rediriger vers la page de connexion
+        }
 
         // config de la table de détail
         colArticleDetail.setCellValueFactory(c ->

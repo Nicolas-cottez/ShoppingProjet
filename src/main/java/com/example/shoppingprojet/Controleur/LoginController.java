@@ -1,11 +1,6 @@
 package com.example.shoppingprojet.Controleur;
-
-import com.example.shoppingprojet.DAO.UtilisateurDAO;
-import com.example.shoppingprojet.DAO.UtilisateurDAOImpl;
-import com.example.shoppingprojet.Modele.Utilisateur;
-import com.example.shoppingprojet.Modele.Client;
-import com.example.shoppingprojet.Modele.ClientSession;
-import com.example.shoppingprojet.Modele.Commande;
+import com.example.shoppingprojet.DAO.*;
+import com.example.shoppingprojet.Modele.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TextField;
@@ -45,22 +40,29 @@ public class LoginController {
 
             if (!"admin".equalsIgnoreCase(user.getRole())) {
                 // on ne gère que le client ici
-                Client client = new Client(
+                Utilisateur utilisateur = new Utilisateur(
                         user.getIdUtilisateur(),
                         user.getNom(),
                         user.getPrenom(),
-                        user.getEmail()
+                        user.getEmail(),
+                        user.getMotDePasse(),
+                        user.getDateInscription(),
+                        user.getHeureInscription(),
+                        user.getAdressePostal(),
+                        user.getCommandes(),
+                        user.getRole()
                 );
-                ClientSession.setClient(client);
+                UtilisateurSession.setUtilisateur(utilisateur);
                 Commande cmd = new Commande(
                         0,
                         LocalDate.now(),
                         LocalTime.now(),
                         0f,
-                        client,
+                        utilisateur.getAdressePostal(),
+                        utilisateur,
                         new ArrayList<>()
                 );
-                ClientSession.setCommande(cmd);
+                UtilisateurSession.setCommande(cmd);
             }
 
             stage.setScene(new Scene(root));

@@ -1,6 +1,6 @@
 package com.example.shoppingprojet.Controleur;
 
-import com.example.shoppingprojet.Modele.ClientSession;
+import com.example.shoppingprojet.Modele.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -43,8 +43,8 @@ public class MainController {
     @FXML
     public void handleLogout() {
         // 1) Vider les informations de session
-        ClientSession.setClient(null);
-        ClientSession.setCommande(null);
+        UtilisateurSession.setUtilisateur(null);
+        UtilisateurSession.setCommande(null);
 
         // 2) Recharger l'écran de connexion
         try {

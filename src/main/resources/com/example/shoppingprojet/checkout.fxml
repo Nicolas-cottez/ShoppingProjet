@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.HBox?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.shoppingprojet.Controleur.CheckoutController"
       spacing="10">
 
+    <!-- Adresse de livraison -->
     <Label text="Adresse de livraison:"/>
-    <TextArea fx:id="livraisonField" prefRowCount="2"/>
+    <TextArea fx:id="livraisonField" prefRowCount="2" wrapText="true" />
 
-    <Label text="Adresse de facturation:"/>
-    <TextArea fx:id="facturationField" prefRowCount="2"/>
-
+    <!-- Moyen de paiement -->
     <Label text="Moyen de paiement:"/>
-    <ComboBox fx:id="paiementBox"/>
+    <ComboBox fx:id="paiementBox" promptText="Sélectionnez..."/>
 
-    <HBox spacing="10">
-        <Button fx:id="annulerButton"   text="Annuler"/>
-        <Button fx:id="confirmerButton" text="Confirmer Commande"/>
+    <!-- Champs Carte Bancaire, masqués par défaut -->
+    <Label fx:id="cardNumberLabel" text="Numéro de carte :" visible="false" />
+    <TextField fx:id="cardNumberField" promptText="1234 5678 9012 3456" visible="false" />
+
+    <Label fx:id="expiryLabel" text="Date d'expiration :" visible="false" />
+    <TextField fx:id="expiryField" promptText="MM/AA" visible="false" />
+
+    <Label fx:id="cvvLabel" text="CVV :" visible="false" />
+    <PasswordField fx:id="cvvField" promptText="123" visible="false" />
+
+    <!-- Boutons d'action -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="annulerButton"   text="Annuler" />
+        <Button fx:id="confirmerButton" text="Confirmer Commande" />
     </HBox>
+
 </VBox>

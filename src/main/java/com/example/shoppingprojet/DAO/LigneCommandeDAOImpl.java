@@ -11,11 +11,17 @@ import java.util.List;
  */
 public class LigneCommandeDAOImpl implements LigneCommandeDAO {
 
-    /** Mappe un ResultSet en LigneCommande */
     private LigneCommande map(ResultSet rs) throws SQLException {
         int idCommande  = rs.getInt("idCommande");
-        int articleId   = rs.getInt("idArticle");
-        Article article = new ArticleDAOImpl().chercherArticleParId(articleId);
+        Article article = new Article(
+                rs.getInt("idArticle"),
+                rs.getInt("idMarque"),
+                rs.getString("nom"),
+                rs.getString("description"),
+                rs.getFloat("prixUnitaire"),
+                rs.getInt("stock"),
+                rs.getString("imageURL")
+        );
         int quantite    = rs.getInt("quantite");
         float prixLigne = rs.getFloat("prixLigne");
         return new LigneCommande(idCommande, article, quantite, prixLigne);
