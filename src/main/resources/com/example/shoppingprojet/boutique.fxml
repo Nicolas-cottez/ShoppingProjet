@@ -6,7 +6,7 @@
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.shoppingprojet.Controleur.BoutiqueController"
       spacing="10"
-      alignment="TOP_CENTER"
+      alignment="CENTER"
       prefWidth="800" prefHeight="600">
 
     <TableView fx:id="tableArticles" prefWidth="780" prefHeight="580">
