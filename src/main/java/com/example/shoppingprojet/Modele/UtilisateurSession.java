@@ -14,7 +14,12 @@ public class UtilisateurSession {
     /** Appelé au login pour fixer le client et initialiser un panier vide. */
     public static void setUtilisateur(Utilisateur u) {
         user = u;
-        resetCommande();
+        if (u != null) {
+            resetCommande();
+        } else {
+            // si on passe null, on vide tout
+            commande = null;
+        }
     }
 
     /** Retourne le client connecté. */
@@ -25,7 +30,10 @@ public class UtilisateurSession {
     /** Retourne la commande en cours. Si elle n'existe pas, on en crée une nouvelle. */
     public static Commande getCommande() {
         if (commande == null) {
-            resetCommande();
+            // ne recrée que si user != null
+            if (user != null) {
+                resetCommande();
+            }
         }
         return commande;
     }
@@ -35,24 +43,23 @@ public class UtilisateurSession {
         commande = cmd;
     }
 
-    /** Vide le panier : recrée une commande vierge. */
-    public static void clearCommande() {
-        resetCommande();
+    /** Vide la session entière (user + panier). */
+    public static void clearSession() {
+        user     = null;
+        commande = null;
     }
 
     /** Initialise une nouvelle commande vide liée au client actuel. */
     private static void resetCommande() {
-        // On passe un idCommande=0, date/heure=maintenant, montant=0f,
-        // adresseLivraison préremplie avec celle du user, user, et panier vide
+        // user est garanti non-null ici
         commande = new Commande(
                 0,
                 LocalDate.now(),
                 LocalTime.now(),
                 0f,
-                user.getAdressePostal(),     // ← 5ᵉ argument : adresseLivraison
-                user,                         // ← 6ᵉ argument : l’utilisateur
-                new ArrayList<>()             // ← 7ᵉ argument : la liste d’articles
+                user.getAdressePostal(),     // adresse du user
+                user,                         // l’objet Utilisateur
+                new ArrayList<>()             // panier vide
         );
     }
-
 }

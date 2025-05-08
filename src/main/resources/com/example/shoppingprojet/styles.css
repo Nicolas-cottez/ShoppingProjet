@@ -1,54 +1,43 @@
-/* styles.css */
-
+/* ===== GLOBAL ===== */
 .root {
     -fx-font-family: "Segoe UI", sans-serif;
-    -fx-background-color: #f4f4f4;
+    -fx-background-color: #fafafa;
 }
 
-.tool-bar {
-    -fx-background-color: #2c3e50;
+/* ===== TOP BAR ===== */
+.top-bar {
+    -fx-background-color: #333;
+    -fx-padding: 0 20;
 }
 
-.tool-bar .button {
-    -fx-text-fill: white;
+.top-bar .button, .top-bar .menu-button {
     -fx-background-color: transparent;
+    -fx-text-fill: white;
     -fx-font-size: 14px;
-    -fx-padding: 8 16;
-}
-.tool-bar .button:hover {
-    -fx-background-color: #34495e;
+    -fx-padding: 8 12;
 }
 
-.button {
-    -fx-background-color: #3498db;
+.top-bar .button:hover {
+    -fx-underline: true;
+}
+
+/* titre appli */
+.app-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* menu compte */
+.account-menu .label {
     -fx-text-fill: white;
-    -fx-font-size: 13px;
-    -fx-padding: 8 16;
+}
+
+/* ===== CONTENU ===== */
+.button {
+    -fx-background-color: #2a9df4;
+    -fx-text-fill: white;
     -fx-background-radius: 4;
 }
 .button:hover {
-    -fx-background-color: #2980b9;
-}
-
-.label {
-    -fx-font-size: 14px;
-    -fx-text-fill: #2c3e50;
-}
-
-.text-field, .password-field, .text-area, .combo-box {
-    -fx-background-radius: 4;
-    -fx-border-radius: 4;
-    -fx-border-color: #bdc3c7;
-    -fx-padding: 6;
-}
-
-.table-view {
-    -fx-border-color: #bdc3c7;
-}
-
-/* Spécifique panel centré */
-.center-pane {
-    -fx-padding: 40;
-    -fx-alignment: center;
-    -fx-spacing: 20;
+    -fx-background-color: #167ac6;
 }

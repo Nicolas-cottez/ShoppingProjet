@@ -1,32 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 
+<?import javafx.scene.layout.AnchorPane?>
 <BorderPane fx:id="borderPane"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.shoppingprojet.Controleur.MainController">
+            fx:controller="com.example.shoppingprojet.Controleur.MainController"
+            stylesheets="@styles.css">
 
+    <!-- TOP BAR -->
     <top>
-        <MenuBar>
-            <Menu text="Navigation">
+        <HBox fx:id="topBar" styleClass="top-bar" spacing="20" alignment="CENTER_LEFT" prefHeight="50">
+
+            <!-- 1) Titre de l'appli -->
+            <Button text="MyShop"
+                    styleClass="app-title"
+                    onAction="#showBoutique"/>
+
+            <!-- 2) Navigation centrale -->
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Boutique"    onAction="#showBoutique"/>
+                <Button text="Mon panier"  onAction="#showPanier"/>
+                <Button text="Historique"  onAction="#showHistorique"/>
+            </HBox>
+
+            <!-- 3) pousse tout à droite -->
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- 4) Menu Compte -->
+            <MenuButton text="Compte" styleClass="account-menu">
                 <items>
-                    <MenuItem text="Boutique"    onAction="#showBoutique"/>
-                    <MenuItem text="Mon Panier"  onAction="#showPanier"/>
-                    <MenuItem text="Historique"  onAction="#showHistorique"/>
+                    <MenuItem text="Profil"       onAction="#showProfil"/>
+                    <MenuItem text="Déconnexion"  onAction="#handleLogout"/>
                 </items>
-            </Menu>
-            <Menu text="Compte">
-                <items>
-                    <MenuItem text="Déconnexion" onAction="#handleLogout"/>
-                </items>
-            </Menu>
-        </MenuBar>
+            </MenuButton>
+        </HBox>
     </top>
 
-    <!-- c’est ici qu’on injecte les vues -->
-    <!-- soit tu remplaces tout le center -->
+    <!-- ZONE CENTRALE (on y injecte nos écrans boutique/panier/...) -->
     <center>
         <AnchorPane fx:id="contentPane"/>
     </center>
-
 </BorderPane>

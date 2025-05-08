@@ -20,64 +20,54 @@ public class MainController {
         showBoutique();  // page par défaut
     }
 
-    @FXML
-    public void showBoutique() {
-        loadCenter("/com/example/shoppingprojet/boutique.fxml");
-    }
-
-    @FXML
-    public void showPanier() {
-        loadCenter("/com/example/shoppingprojet/panier.fxml");
-    }
-
-    @FXML
-    public void showHistorique() {
-        loadCenter("/com/example/shoppingprojet/historique.fxml");
-    }
-
-    @FXML
-    public void showCheckout() {
-        loadCenter("/com/example/shoppingprojet/checkout.fxml");
-    }
+    @FXML public void showBoutique()   { loadCenter("boutique.fxml"); }
+    @FXML public void showPanier()     { loadCenter("panier.fxml"); }
+    @FXML public void showHistorique() { loadCenter("historique.fxml"); }
+    @FXML public void showCheckout()   { loadCenter("checkout.fxml"); }
+    @FXML public void showProfil()     { loadCenter("profil.fxml"); }
 
     @FXML
     public void handleLogout() {
-        // 1) Vider les informations de session
-        UtilisateurSession.setUtilisateur(null);
-        UtilisateurSession.setCommande(null);
+        UtilisateurSession.clearSession();
 
-        // 2) Recharger l'écran de connexion
         try {
-            Stage stage = (Stage) /* récupère la fenêtre courante */
-                    // si vous étiez dans un AnchorPane nommé contentPane :
-                    contentPane.getScene().getWindow();
-            Parent root = FXMLLoader.load(
+            Stage stage = (Stage) contentPane.getScene().getWindow();
+            Parent root  = FXMLLoader.load(
                     getClass().getResource("/com/example/shoppingprojet/login.fxml")
             );
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            stage.setScene(new Scene(root));
             stage.setTitle("Connexion");
-            stage.setMaximized(true); // ou false si vous préférez
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void loadCenter(String fxmlPath) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Node view = loader.load();
 
-            // Passe-toi-même en tant que contrôleur parent si besoin :
+    private void loadCenter(String fxmlName) {
+        try {
+            // construit soi-même l’URL absolue
+            String resource = "/com/example/shoppingprojet/" + fxmlName;
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource(resource));
+
+            Parent view = loader.load();    // maintenant loader a bien sa location
+
+            // injection du contrôleur parent si besoin
             Object ctl = loader.getController();
             if (ctl instanceof ControlledScreen) {
                 ((ControlledScreen)ctl).setMainController(this);
             }
 
             contentPane.getChildren().setAll(view);
+            // pour être sûr que la vue prenne tout l’AnchorPane :
+            AnchorPane.setTopAnchor(view,    0d);
+            AnchorPane.setBottomAnchor(view, 0d);
+            AnchorPane.setLeftAnchor(view,   0d);
+            AnchorPane.setRightAnchor(view,  0d);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }
