@@ -1,12 +1,8 @@
 package com.example.shoppingprojet.Controleur;
 
-import com.example.shoppingprojet.DAO.ArticleDAO;
-import com.example.shoppingprojet.DAO.ArticleDAOImpl;
-import com.example.shoppingprojet.DAO.CommandeDAO;
-import com.example.shoppingprojet.DAO.CommandeDAOImpl;
-import com.example.shoppingprojet.Modele.ArticlePanier;
-import com.example.shoppingprojet.Modele.Commande;
-import com.example.shoppingprojet.Modele.UtilisateurSession;
+import com.example.shoppingprojet.DAO.*;
+import com.example.shoppingprojet.Modele.*;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -104,6 +100,19 @@ public class CheckoutController implements ControlledScreen {
 
             // e) Persister la commande (adresse + user)
             commandeDAO.ajouterCommande(currentCmd);
+
+            // **NOUVEAU : enregistrer chaque ligne de commande**
+            LigneCommandeDAO ligneDAO = new LigneCommandeDAOImpl();
+            for (ArticlePanier ap : currentCmd.getArticles()) {
+                float prixLigne = ap.getArticle().getPrixUnitaire() * ap.getQuantite();
+                LigneCommande lc = new LigneCommande(
+                        currentCmd.getIdCommande(),    // idCommande généré par l'INSERT
+                        ap.getArticle(),               // l'article
+                        ap.getQuantite(),              // quantité
+                        prixLigne                      // prixLigne
+                );
+                ligneDAO.ajouterLigneCommande(lc);
+            }
 
             // f) Mettre à jour les stocks
             for (ArticlePanier ap : currentCmd.getArticles()) {

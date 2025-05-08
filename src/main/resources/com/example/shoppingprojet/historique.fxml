@@ -1,42 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.control.Label?>
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.shoppingprojet.Controleur.HistoriqueController">
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.shoppingprojet.Controleur.HistoriqueController"
+      spacing="10">
 
-    <top>
-        <Label text="Historique des commandes"
-               style="-fx-font-size:18; -fx-padding:10"/>
-    </top>
+    <Label text="Historique des commandes" style="-fx-font-size:16px; -fx-font-weight:bold;"/>
+    <TableView fx:id="tableHistorique" prefHeight="200">
+        <columns>
+            <TableColumn fx:id="colIdCommande"   text="ID"       prefWidth="50"/>
+            <TableColumn fx:id="colDate"         text="Date"     prefWidth="100"/>
+            <TableColumn fx:id="colHeure"        text="Heure"    prefWidth="80"/>
+            <TableColumn fx:id="colMontant"      text="Montant"  prefWidth="80"/>
+        </columns>
+    </TableView>
 
-    <center>
-        <VBox spacing="10" style="-fx-padding: 10;">
-            <!-- Table des commandes -->
-            <TableView fx:id="tableHistorique" prefHeight="200">
-                <columns>
-                    <TableColumn fx:id="colIdCommande" text="ID"/>
-                    <TableColumn fx:id="colDate"       text="Date"/>
-                    <TableColumn fx:id="colHeure"      text="Heure"/>
-                    <TableColumn fx:id="colMontant"    text="Montant"/>
-                </columns>
-            </TableView>
+    <Label text="Détail de la commande sélectionnée" style="-fx-font-size:14px; -fx-font-weight:bold;"/>
 
-            <!-- Table de détail -->
-            <Label text="Détail de la commande sélectionnée"
-                   style="-fx-font-size:14"/>
-            <TableView fx:id="tableDetail" prefHeight="150">
-                <columns>
-                    <TableColumn fx:id="colArticleDetail"   text="Article"/>
-                    <TableColumn fx:id="colQteDetail"       text="Quantité"/>
-                    <TableColumn fx:id="colPrixDetail"      text="Prix ligne"/>
-                </columns>
-            </TableView>
-        </VBox>
-    </center>
-</BorderPane>
+    <!-- Affichage date, heure, adresse -->
+    <GridPane hgap="10" vgap="5">
+        <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" minWidth="60"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints halignment="RIGHT" minWidth="60"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
 
+        <Label text="Date :"        GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label fx:id="dateLabel"    GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label text="Heure :"       GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+        <Label fx:id="heureLabel"   GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+        <Label text="Adresse :"       GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Label fx:id="adresseLabel"   GridPane.rowIndex="1" GridPane.columnIndex="1"
+               GridPane.columnSpan="3" wrapText="true"/>
+    </GridPane>
+
+    <!-- Détail des articles agrégés -->
+    <TableView fx:id="tableDetail">
+        <columns>
+            <TableColumn fx:id="colArticleDetail" text="Article"    prefWidth="200"/>
+            <TableColumn fx:id="colQteDetail"     text="Quantité"   prefWidth="80"/>
+            <TableColumn fx:id="colPrixDetail"    text="Prix ligne" prefWidth="100"/>
+        </columns>
+    </TableView>
+
+</VBox>
