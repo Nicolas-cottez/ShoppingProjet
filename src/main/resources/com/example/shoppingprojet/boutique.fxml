@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.shoppingprojet.Controleur.BoutiqueController"
       spacing="10"
       alignment="CENTER"
-      prefWidth="800" prefHeight="600">
+      prefWidth="800"
+      prefHeight="600">
 
-    <TableView fx:id="tableArticles" prefWidth="780" prefHeight="580">
-        <columns>
-            <TableColumn fx:id="colNom"         text="Nom"        prefWidth="150"/>
-            <TableColumn fx:id="colDescription" text="Description" prefWidth="250"/>
-            <TableColumn fx:id="colPrix"        text="Prix (€)"   prefWidth="80"/>
-            <TableColumn fx:id="colStock"       text="Stock"      prefWidth="80"/>
-            <TableColumn fx:id="colMarque"      text="Marque"     prefWidth="100"/>
-            <TableColumn fx:id="colQuantiteCart" text="Quantité" prefWidth="100"/>
-            <TableColumn fx:id="colAction"      text="Action"     prefWidth="120"/>
-        </columns>
-    </TableView>
+    <!-- Padding global pour le VBox -->
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
+        <content>
+            <!-- TilePane : plus AUCUN padding="10" ici -->
+            <TilePane fx:id="tilePane"
+                      hgap="20"
+                      vgap="20"
+                      prefColumns="3"
+                      tileAlignment="CENTER">
+                <!-- Padding interne correct pour le TilePane -->
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+            </TilePane>
+        </content>
+    </ScrollPane>
 
 </VBox>

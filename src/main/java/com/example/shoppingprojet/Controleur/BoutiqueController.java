@@ -1,85 +1,79 @@
 package com.example.shoppingprojet.Controleur;
-import com.example.shoppingprojet.DAO.*;
-import com.example.shoppingprojet.Modele.*;
 
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
+import com.example.shoppingprojet.DAO.ArticleDAO;
+import com.example.shoppingprojet.DAO.ArticleDAOImpl;
+import com.example.shoppingprojet.Modele.Article;
+import com.example.shoppingprojet.Modele.UtilisateurSession;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.util.Callback;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 
 import java.util.List;
 
 public class BoutiqueController implements ControlledScreen {
     private MainController mainController;
 
-    @FXML private TableView<Article>            tableArticles;
-    @FXML private TableColumn<Article, String>  colNom;
-    @FXML private TableColumn<Article, String>  colDescription;
-    @FXML private TableColumn<Article, Float>   colPrix;
-    @FXML private TableColumn<Article, Integer> colStock;
-    @FXML private TableColumn<Article, String>  colMarque;
-    @FXML private TableColumn<Article, Integer> colQuantiteCart;
-    @FXML private TableColumn<Article, Void>    colAction;
+    @FXML private TilePane tilePane;
 
     private final ArticleDAO articleDAO = new ArticleDAOImpl();
 
     @FXML
     public void initialize() {
-        // nom, description, prix, stock, marque
-        colNom.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getNom())
-        );
-        colDescription.setCellValueFactory(c ->
-                new SimpleObjectProperty<>(c.getValue().getDescription())
-        );
-        colPrix.setCellValueFactory(c ->
-                new SimpleObjectProperty<>(c.getValue().getPrixUnitaire())
-        );
-        colStock.setCellValueFactory(c ->
-                new SimpleObjectProperty<>(c.getValue().getStock())
-        );
-        colMarque.setCellValueFactory(c ->
-                new SimpleObjectProperty<>(c.getValue().getNomMarque())
-        );
-
-        // quantité déjà présente dans le panier
-        colQuantiteCart.setCellValueFactory(c -> {
-            int idArt = c.getValue().getIdArticle();
-            int qte = UtilisateurSession.getCommande().getArticles().stream()
-                    .filter(ap -> ap.getArticle().getIdArticle() == idArt)
-                    .map(ArticlePanier::getQuantite)
-                    .findFirst()
-                    .orElse(0);
-            return new SimpleObjectProperty<>(qte);
-        });
-
-        // bouton "Ajouter"
-        colAction.setCellFactory(new Callback<>() {
-            @Override
-            public TableCell<Article, Void> call(TableColumn<Article, Void> param) {
-                return new TableCell<>() {
-                    private final Button btn = new Button("Ajouter");
-                    {
-                        btn.setOnAction(e -> {
-                            Article art = getTableView().getItems().get(getIndex());
-                            UtilisateurSession.getCommande().ajouterArticle(art, 1);
-                            tableArticles.refresh();
-                        });
-                    }
-                    @Override
-                    protected void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setGraphic(empty ? null : btn);
-                    }
-                };
-            }
-        });
-
-        // chargement initial
+        // on récupère tous les articles
         List<Article> list = articleDAO.getAllArticles();
-        tableArticles.setItems(FXCollections.observableArrayList(list));
+        // puis on crée une card par article
+        for (Article art : list) {
+            tilePane.getChildren().add(createCard(art));
+        }
+    }
+
+    private Node createCard(Article art) {
+        // 1) L'image du produit
+        ImageView imgView = new ImageView(
+                new Image(getClass().getResourceAsStream(
+                        "/com/example/shoppingprojet/image/" + art.getImageURL()
+                ))
+        );
+        imgView.setFitWidth(120);
+        imgView.setPreserveRatio(true);
+
+        // 2) Nom et prix
+        Label name  = new Label(art.getNom());
+        name.setWrapText(true);
+        name.setMaxWidth(120);
+        Label price = new Label(String.format("%.2f €", art.getPrixUnitaire()));
+
+        // 3) Quantité + bouton “Ajouter”
+        TextField qty = new TextField("1");
+        qty.setPrefWidth(40);
+        Button add = new Button("Ajouter");
+        add.setOnAction(e -> {
+            int q = Integer.parseInt(qty.getText());
+            UtilisateurSession.getCommande().ajouterArticle(art, q);
+            // tu peux éventuellement afficher une notif ici
+        });
+        HBox controls = new HBox(5, qty, add);
+        controls.setAlignment(Pos.CENTER);
+
+        // 4) Mise en forme de la “card”
+        VBox card = new VBox(8, imgView, name, price, controls);
+        card.setAlignment(Pos.TOP_CENTER);
+        card.setStyle("""
+            -fx-border-color: black;
+            -fx-border-radius: 5;
+            -fx-padding: 10;
+            -fx-background-radius: 5;
+        """);
+
+        return card;
     }
 
     @Override
