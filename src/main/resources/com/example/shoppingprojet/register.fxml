@@ -20,13 +20,14 @@
             <TextField fx:id="prenomField"      promptText="Prénom"/>
             <TextField fx:id="emailField"       promptText="Email"/>
             <PasswordField fx:id="passwordField" promptText="Mot de passe"/>
-            <Label fx:id="errorLabel" textFill="red"/>
+            <Label fx:id="statusLabel" textFill="red"/>
             <Button text="S'inscrire" onAction="#handleRegister"/>
             <ToolBar>
-                <Button text="← Se connecter" fx:id="backButton" onAction="#goToLogin"/>
+                <Button fx:id="backButton"
+                        text="← Retour"
+                        onAction="#handleBack"
+                        styleClass="button"/>
             </ToolBar>
-
         </VBox>
     </children>
 </AnchorPane>
-

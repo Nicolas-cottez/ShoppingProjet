@@ -1,39 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.Button?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.shoppingprojet.Controleur.CheckoutController"
-      spacing="10">
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.shoppingprojet.Controleur.CheckoutController"
+            prefWidth="900" prefHeight="600">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
 
-    <!-- Adresse de livraison -->
-    <Label text="Adresse de livraison:"/>
-    <TextArea fx:id="livraisonField" prefRowCount="2" wrapText="true" />
+    <!-- TITRE EN HAUT -->
+    <top>
+        <Label text="Validation de votre commande"
+               styleClass="header-label"
+               BorderPane.alignment="CENTER"/>
+    </top>
 
-    <!-- Moyen de paiement -->
-    <Label text="Moyen de paiement:"/>
-    <ComboBox fx:id="paiementBox" promptText="Sélectionnez..."/>
+    <!-- CONTENU PRINCIPAL : deux colonnes -->
+    <center>
+        <HBox spacing="30" alignment="TOP_LEFT">
+            <!-- GAUCHE : adresse + paiement -->
+            <VBox spacing="20" HBox.hgrow="ALWAYS">
 
-    <!-- Champs Carte Bancaire, masqués par défaut -->
-    <Label fx:id="cardNumberLabel" text="Numéro de carte :" visible="false" />
-    <TextField fx:id="cardNumberField" promptText="1234 5678 9012 3456" visible="false" />
+                <!-- SECTION ADRESSE -->
+                <TitledPane text="Adresse de livraison" expanded="true">
+                    <VBox spacing="10">
+                        <padding>
+                            <Insets top="20" right="20" bottom="20" left="20"/>
+                        </padding>
+                        <HBox alignment="CENTER_RIGHT">
+                            <Hyperlink text="Modifier"
+                                       onMouseClicked="#handleEditAddress"
+                                       styleClass="edit-link"/>
+                        </HBox>
+                        <TextArea fx:id="livraisonField"
+                                  wrapText="true"
+                                  editable="true"
+                                  prefRowCount="3"/>
+                    </VBox>
+                </TitledPane>
 
-    <Label fx:id="expiryLabel" text="Date d'expiration :" visible="false" />
-    <TextField fx:id="expiryField" promptText="MM/AA" visible="false" />
+                <!-- SECTION PAIEMENT -->
+                <TitledPane text="Moyen de paiement" expanded="true">
+                    <VBox spacing="10">
+                        <padding>
+                            <Insets top="20" right="20" bottom="20" left="20"/>
+                        </padding>
 
-    <Label fx:id="cvvLabel" text="CVV :" visible="false" />
-    <PasswordField fx:id="cvvField" promptText="123" visible="false" />
+                        <ComboBox fx:id="paiementBox" promptText="Sélectionnez..."/>
 
-    <!-- Boutons d'action -->
-    <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button fx:id="annulerButton"   text="Annuler" />
-        <Button fx:id="confirmerButton" text="Confirmer Commande" />
-    </HBox>
+                        <!-- Détails carte bancaire -->
+                        <GridPane hgap="10" vgap="10" visible="false" fx:id="cbPane">
+                            <Label text="Numéro :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                            <TextField fx:id="cardNumberField"  GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                            <Label text="Expiration :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                            <TextField fx:id="expiryField"      GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                            <Label text="CVV :"        GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                            <PasswordField fx:id="cvvField"      GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                        </GridPane>
 
-</VBox>
+                    </VBox>
+                </TitledPane>
+
+                <!-- BOUTON CONFIRMER -->
+                <HBox alignment="CENTER_RIGHT">
+                    <Button text="Passer au paiement"
+                            onAction="#handleConfirm"
+                            styleClass="primary-button"/>
+                </HBox>
+            </VBox>
+
+            <!-- DROITE : récapitulatif de la commande -->
+            <VBox spacing="15" alignment="TOP_LEFT" prefWidth="300">
+
+                <Label text="Récapitulatif" styleClass="section-label"/>
+
+                <!-- Sous-total / frais / total -->
+                <GridPane hgap="10" vgap="5">
+                    <Label text="Sous-total :"  GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <Label fx:id="subtotalLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    <Label text="Frais d'expédition :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <Label fx:id="shippingLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <Label text="Total :" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="total-label"/>
+                    <Label fx:id="totalLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="total-label"/>
+                </GridPane>
+
+                <Separator/>
+
+                <!-- Liste des articles -->
+                <ScrollPane fitToWidth="true">
+                    <VBox fx:id="summaryBox" spacing="10" />
+                    <padding>
+                        <Insets top="5" right="5" bottom="5" left="5"/>
+                    </padding>
+                </ScrollPane>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>

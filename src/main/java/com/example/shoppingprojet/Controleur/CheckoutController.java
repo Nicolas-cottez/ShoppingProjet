@@ -4,13 +4,16 @@ import com.example.shoppingprojet.DAO.*;
 import com.example.shoppingprojet.Modele.*;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.event.ActionEvent;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,124 +22,138 @@ import java.util.ArrayList;
 public class CheckoutController implements ControlledScreen {
     private MainController mainController;
 
-    @FXML private TextArea      livraisonField;
+    //–– FXML injections ––
+    @FXML private TextArea livraisonField;
     @FXML private ComboBox<String> paiementBox;
-    @FXML private Label         cardNumberLabel, expiryLabel, cvvLabel;
-    @FXML private TextField     cardNumberField, expiryField;
+    @FXML private GridPane cbPane;               // conteneur des champs CB
+    @FXML private TextField cardNumberField;
+    @FXML private TextField expiryField;
     @FXML private PasswordField cvvField;
-    @FXML private Button        annulerButton, confirmerButton;
+    @FXML private Label subtotalLabel;
+    @FXML private Label shippingLabel;
+    @FXML private Label totalLabel;
+    @FXML private VBox summaryBox;
 
     private final CommandeDAO commandeDAO = new CommandeDAOImpl();
-    private final ArticleDAO articleDAO   = new ArticleDAOImpl();
+    private final LigneCommandeDAO ligneDAO = new LigneCommandeDAOImpl();
+    private final ArticleDAO articleDAO = new ArticleDAOImpl();
 
     @FXML
     public void initialize() {
-        // 1) Pré-remplir l’adresse
+        // 1) Adresse pré-remplie et non éditable
         livraisonField.setText(UtilisateurSession.getUtilisateur().getAdressePostal());
+        livraisonField.setEditable(false);
 
         // 2) Moyens de paiement
         paiementBox.getItems().setAll("Carte bancaire", "PayPal", "Chèque");
+        paiementBox.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+            // on affiche le panneau CB seulement si "Carte bancaire"
+            cbPane.setVisible("Carte bancaire".equals(newV));
+        });
 
-        // 3) Cacher les champs CB
-        cardNumberLabel.setVisible(false);
-        cardNumberField.setVisible(false);
-        expiryLabel.setVisible(false);
-        expiryField.setVisible(false);
-        cvvLabel.setVisible(false);
-        cvvField.setVisible(false);
+        // 3) Remplir le récapitulatif
+        refreshSummary();
+    }
 
-        // 4) Afficher/masquer CB selon sélection
-        paiementBox.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((obs, oldV, newV) -> {
-                    boolean cb = "Carte bancaire".equals(newV);
-                    cardNumberLabel.setVisible(cb);
-                    cardNumberField.setVisible(cb);
-                    expiryLabel.setVisible(cb);
-                    expiryField.setVisible(cb);
-                    cvvLabel.setVisible(cb);
-                    cvvField.setVisible(cb);
-                });
+    /** Appelé quand on clique sur "Modifier" pour rendre l’adresse éditable */
+    @FXML
+    private void handleEditAddress(MouseEvent ev) {
+        livraisonField.setEditable(true);
+        livraisonField.requestFocus();
+    }
 
-        // 5) Annuler → panier
-        annulerButton.setOnAction(e -> mainController.showPanier());
+    /** Appelé quand on clique sur "Passer au paiement" */
+    @FXML
+    private void handleConfirm(ActionEvent ev) {
+        Commande cmd = UtilisateurSession.getCommande();
 
-        // 6) Confirmer → validation & enregistrement
-        confirmerButton.setOnAction(e -> {
-            Commande currentCmd = UtilisateurSession.getCommande();
+        // a) mettre à jour l’adresse
+        cmd.setAdresseLivraison(livraisonField.getText());
 
-            // a) Adresse de livraison modifiable
-            currentCmd.setAdresseLivraison(livraisonField.getText());
+        // b) vérifier choix de paiement
+        String moyen = paiementBox.getValue();
+        if (moyen == null) {
+            new Alert(Alert.AlertType.ERROR, "Veuillez choisir un moyen de paiement.").showAndWait();
+            return;
+        }
 
-            // b) Vérification du moyen de paiement sélectionné
-            String moyen = paiementBox.getValue();
-            if (moyen == null) {
-                Alert alert = new Alert(Alert.AlertType.ERROR,
-                        "Veuillez choisir un moyen de paiement.");
-                alert.showAndWait();
+        // c) si CB, vérifier champ remplis
+        if ("Carte bancaire".equals(moyen)) {
+            if (cardNumberField.getText().isBlank() ||
+                    expiryField.getText().isBlank() ||
+                    cvvField.getText().isBlank()) {
+                new Alert(Alert.AlertType.ERROR, "Merci de remplir numéro, date d’expiration et CVV.").showAndWait();
                 return;
             }
+        }
 
-            // c) Si CB : tous les champs doivent être renseignés
-            if ("Carte bancaire".equals(moyen)) {
-                if (cardNumberField.getText().isEmpty()
-                        || expiryField.getText().isEmpty()
-                        || cvvField.getText().isEmpty()) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Paiement incomplet");
-                    alert.setHeaderText(null);
-                    alert.setContentText(
-                            "Merci de remplir numéro, date d’expiration et CVV.");
-                    alert.showAndWait();
-                    return;
-                }
-            }
+        // d) horodatage + total
+        cmd.setDateCommande(LocalDate.now());
+        cmd.setHeureCommande(LocalTime.now());
+        float total = (float) commandeDAO.calculerPrixCommande(cmd);
+        cmd.setMontantTotal(total);
 
-            // d) Date, heure et total
-            currentCmd.setDateCommande(LocalDate.now());
-            currentCmd.setHeureCommande(LocalTime.now());
-            float total = (float) commandeDAO.calculerPrixCommande(currentCmd);
-            currentCmd.setMontantTotal(total);
-
-            // e) Persister la commande (adresse + user)
-            commandeDAO.ajouterCommande(currentCmd);
-
-            // **NOUVEAU : enregistrer chaque ligne de commande**
-            LigneCommandeDAO ligneDAO = new LigneCommandeDAOImpl();
-            for (ArticlePanier ap : currentCmd.getArticles()) {
-                float prixLigne = ap.getArticle().getPrixUnitaire() * ap.getQuantite();
-                LigneCommande lc = new LigneCommande(
-                        currentCmd.getIdCommande(),    // idCommande généré par l'INSERT
-                        ap.getArticle(),               // l'article
-                        ap.getQuantite(),              // quantité
-                        prixLigne                      // prixLigne
-                );
-                ligneDAO.ajouterLigneCommande(lc);
-            }
-
-            // f) Mettre à jour les stocks
-            for (ArticlePanier ap : currentCmd.getArticles()) {
-                articleDAO.decreaseStock(
-                        ap.getArticle().getIdArticle(),
-                        ap.getQuantite()
-                );
-            }
-
-            // g) Réinitialiser le panier (vide + adresse préremplie)
-            Commande newCmd = new Commande(
-                    0,
-                    LocalDate.now(),
-                    LocalTime.now(),
-                    0f,
-                    UtilisateurSession.getUtilisateur().getAdressePostal(),
-                    UtilisateurSession.getUtilisateur(),
-                    new ArrayList<>()
+        // e) persister commande + lignes
+        commandeDAO.ajouterCommande(cmd);
+        for (ArticlePanier ap : cmd.getArticles()) {
+            float prixLigne = ap.getArticle().getPrixUnitaire() * ap.getQuantite();
+            LigneCommande lc = new LigneCommande(
+                    cmd.getIdCommande(),
+                    ap.getArticle(),
+                    ap.getQuantite(),
+                    prixLigne
             );
-            UtilisateurSession.setCommande(newCmd);
+            ligneDAO.ajouterLigneCommande(lc);
+            // mettre à jour stock
+            articleDAO.decreaseStock(ap.getArticle().getIdArticle(), ap.getQuantite());
+        }
 
-            // h) Retour à la boutique
-            mainController.showBoutique();
-        });
+        // f) réinitialiser le panier (vide + adresse préremplie)
+        UtilisateurSession.clearCommande();
+        // vous pouvez aussi recréer un nouvel utilisateur/nouvelle session ici si besoin
+
+        // g) retour à la boutique
+        mainController.showBoutique();
+    }
+
+    /** Met à jour la partie “Récapitulatif” à droite */
+    private void refreshSummary() {
+        Commande cmd = UtilisateurSession.getCommande();
+        double sousTotal = commandeDAO.calculerPrixCommande(cmd);
+        double frais = 0.0;         // ou logique de calcul
+        double total    = sousTotal + frais;
+
+        subtotalLabel.setText(String.format("%.2f €", sousTotal));
+        shippingLabel.setText(frais == 0 ? "Gratuit" : String.format("%.2f €", frais));
+        totalLabel.setText(String.format("%.2f €", total));
+
+        summaryBox.getChildren().clear();
+        for (ArticlePanier ap : cmd.getArticles()) {
+            HBox row = new HBox(10);
+            // Image miniature
+            ImageView iv = new ImageView(
+                    new Image(getClass().getResourceAsStream("/com/example/shoppingprojet/image/" + ap.getArticle().getImageURL())));
+            iv.setFitWidth(50);
+            iv.setPreserveRatio(true);
+
+            // Description texte
+            VBox info = new VBox(2);
+            Label title = new Label(ap.getArticle().getNom());
+            Label qty   = new Label(
+                    String.format("Quantité : %d @ %.2f €", ap.getQuantite(), ap.getArticle().getPrixUnitaire())
+            );
+            Label prix  = new Label(
+                    String.format("%.2f €", ap.getQuantite() * ap.getArticle().getPrixUnitaire())
+            );
+            info.getChildren().addAll(title, qty, prix);
+
+            // étirer pour alignement
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, Priority.ALWAYS);
+
+            row.getChildren().addAll(iv, info, spacer);
+            summaryBox.getChildren().add(row);
+        }
     }
 
     @Override

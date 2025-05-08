@@ -1,33 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.shoppingprojet.Controleur.PanierController"
-      spacing="10">
-    <children>
-        <TableView fx:id="tablePanier" prefWidth="600" prefHeight="400" layoutX="10" layoutY="10">
-            <columns>
-                <TableColumn fx:id="colArticle"    text="Article"        prefWidth="200"/>
-                <TableColumn fx:id="colQuantite"   text="Quantité"       prefWidth="100"/>
-                <TableColumn fx:id="colPrixUnitaire" text="Prix Unitaire" prefWidth="150"/>
-                <TableColumn fx:id="colPrixAvant"     text="Total Avant" prefWidth="150"/>
-                <TableColumn fx:id="colPrixApres"     text="Total Après" prefWidth="150"/>
-            </columns>
-        </TableView>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.shoppingprojet.Controleur.PanierController"
+            prefWidth="900" prefHeight="600">
 
-        <!-- CE SONT CES LIGNES QUI MANQUAIENT -->
-        <Button fx:id="retourButton"
-                text="Retour Boutique"
-                layoutX="10" layoutY="420"
-                onAction="#handleRetour"/>
+    <!-- CENTRE : liste des articles du panier -->
+    <center>
+        <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED">
+            <VBox fx:id="articlesContainer"
+                  spacing="15">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                <!-- ... -->
+            </VBox>
+        </ScrollPane>
+    </center>
 
-        <Button fx:id="passerCommandeButton"
-                text="Passer Commande"
-                layoutX="150" layoutY="420"
-                onAction="#handlePasserCommande"/>
-    </children>
-</VBox>
+    <!-- DROITE : récapitulatif & paiement -->
+    <right>
+        <VBox spacing="10"
+              style="-fx-background-color: #f9f9f9;"
+              alignment="TOP_CENTER">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="Récapitulatif"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+            <GridPane hgap="10" vgap="8">
+                <Label text="Sous-total avant :"      GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <Label fx:id="lblSubtotalBefore"      GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="Sous-total après :"      GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <Label fx:id="lblSubtotalAfter"       GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Frais de port :"          GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <Label text="Gratuit"                  GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label text="Total :" style="-fx-font-weight:bold;"
+                       GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <Label fx:id="lblTotal"
+                       style="-fx-font-weight:bold;"
+                       GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <Button text="Paiement"
+                    onAction="#handlePasserCommande"
+                    maxWidth="Infinity"
+                    style="-fx-font-size: 14px; -fx-padding: 10;"
+            />
+        </VBox>
+    </right>
+</BorderPane>

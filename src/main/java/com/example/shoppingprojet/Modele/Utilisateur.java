@@ -38,7 +38,10 @@ public class Utilisateur {
     public LocalDate getDateInscription() { return dateInscription; }
     public LocalTime getHeureInscription() { return heureInscription; }
     public String getRole() {return role;}
-    public void setRole(String role) { this.role = role; }
     public String getAdressePostal() { return adressePostal; }
     public List<Commande> getCommandes() { return commandes; }
+    public void setNom(String nom) {this.nom = nom;}
+    public void setPrenom(String prenom) {this.prenom = prenom;}
+    public void setEmail(String email) {this.email = email;}
+    public void setAdressePostal(String adressePostal) {this.adressePostal = adressePostal;}
 }

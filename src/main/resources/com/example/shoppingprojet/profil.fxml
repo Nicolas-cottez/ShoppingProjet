@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.shoppingprojet.Controleur.ProfilController"
+            prefWidth="600" prefHeight="400">
+    <!-- Padding global -->
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- En-tête -->
+    <top>
+        <Label text="Mon profil"
+               styleClass="header-label"
+               BorderPane.alignment="CENTER"/>
+    </top>
+
+    <!-- Corps : grille à deux colonnes -->
+    <center>
+        <GridPane hgap="15" vgap="15"
+                  alignment="TOP_CENTER"
+                  maxWidth="500">
+            <!-- Colonnes : libellé aligné à droite + champ qui grandit -->
+            <columnConstraints>
+                <ColumnConstraints halignment="RIGHT" minWidth="120"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+
+            <!-- Nom -->
+            <Label text="Nom :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="nomField"
+                       GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <!-- Prénom -->
+            <Label text="Prénom :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="prenomField"
+                       GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <!-- Email -->
+            <Label text="Email :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="emailField"
+                       GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <!-- Adresse postale -->
+            <Label text="Adresse :" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <TextArea fx:id="adresseField"
+                      wrapText="true"
+                      prefRowCount="2"
+                      GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <!-- Boutons Annuler / Enregistrer -->
+            <HBox spacing="10"
+                  alignment="CENTER_RIGHT"
+                  GridPane.rowIndex="4" GridPane.columnIndex="1">
+                <Button text="Annuler"
+                        onAction="#handleCancel"
+                        styleClass="button"/>
+                <Button text="Enregistrer"
+                        onAction="#handleSave"
+                        styleClass="primary-button"/>
+            </HBox>
+        </GridPane>
+    </center>
+</BorderPane>

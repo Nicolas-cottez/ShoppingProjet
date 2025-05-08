@@ -48,6 +48,9 @@ public class UtilisateurSession {
         user     = null;
         commande = null;
     }
+    public static void clearCommande() {
+        resetCommande();
+    }
 
     /** Initialise une nouvelle commande vide liée au client actuel. */
     private static void resetCommande() {

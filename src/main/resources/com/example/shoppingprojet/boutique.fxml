@@ -1,35 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.TilePane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.shoppingprojet.Controleur.BoutiqueController"
-      spacing="10"
-      alignment="CENTER"
-      prefWidth="800"
-      prefHeight="600">
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.shoppingprojet.Controleur.BoutiqueController"
+            prefWidth="1000" prefHeight="700">
 
-    <!-- Padding global pour le VBox -->
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
+    <!-- Panneau de filtres à gauche -->
+    <left>
+        <VBox spacing="10" style="-fx-padding:10;">
+            <!-- Recherche par nom -->
+            <Label text="Recherche par nom :"/>
+            <TextField fx:id="searchField" promptText="Tapez un mot-clé"/>
 
-    <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
-        <content>
-            <!-- TilePane : plus AUCUN padding="10" ici -->
+            <!-- Filtrer par marque -->
+            <Label text="Filtrer par marque :"/>
+            <ComboBox fx:id="marqueBox">
+                <items>
+                    <!-- sera rempli dynamiquement -->
+                </items>
+            </ComboBox>
+
+            <!-- Trier par prix -->
+            <Label text="Trier par prix :"/>
+            <ComboBox fx:id="sortBox">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Croissant"/>
+                        <String fx:value="Décroissant"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+
+            <Button text="Appliquer" onAction="#applyFilters"/>
+            <Separator/>
+            <Button text="Réinitialiser" onAction="#resetFilters"/>
+        </VBox>
+    </left>
+
+    <!-- Zone principale -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-padding:10;">
             <TilePane fx:id="tilePane"
-                      hgap="20"
-                      vgap="20"
-                      prefColumns="3"
-                      tileAlignment="CENTER">
-                <!-- Padding interne correct pour le TilePane -->
-                <padding>
-                    <Insets top="10" right="10" bottom="10" left="10"/>
-                </padding>
-            </TilePane>
-        </content>
-    </ScrollPane>
-
-</VBox>
+                      hgap="15" vgap="15"
+                      prefColumns="4"
+                      tileAlignment="TOP_CENTER"/>
+        </ScrollPane>
+    </center>
+</BorderPane>

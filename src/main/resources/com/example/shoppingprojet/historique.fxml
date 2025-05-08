@@ -1,55 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.shoppingprojet.Controleur.HistoriqueController"
-      spacing="10">
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.shoppingprojet.Controleur.HistoriqueController"
+            prefWidth="900" prefHeight="600">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
 
-    <Label text="Historique des commandes" style="-fx-font-size:16px; -fx-font-weight:bold;"/>
-    <TableView fx:id="tableHistorique" prefHeight="200">
-        <columns>
-            <TableColumn fx:id="colIdCommande"   text="ID"       prefWidth="50"/>
-            <TableColumn fx:id="colDate"         text="Date"     prefWidth="100"/>
-            <TableColumn fx:id="colHeure"        text="Heure"    prefWidth="80"/>
-            <TableColumn fx:id="colMontant"      text="Montant"  prefWidth="80"/>
-        </columns>
-    </TableView>
+    <!-- TITRE -->
+    <top>
+        <Label text="Historique des commandes"
+               styleClass="header-label"
+               BorderPane.alignment="CENTER"/>
+    </top>
 
-    <Label text="Détail de la commande sélectionnée" style="-fx-font-size:14px; -fx-font-weight:bold;"/>
+    <!-- CORPS : deux colonnes -->
+    <center>
+        <HBox spacing="30" alignment="TOP_LEFT">
+            <!-- GAUCHE : liste des commandes -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <Label text="Vos commandes" styleClass="section-label"/>
+                <TableView fx:id="tableHistorique" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colIdCommande" text="ID" prefWidth="50"/>
+                        <TableColumn fx:id="colDate"       text="Date" prefWidth="100"/>
+                        <TableColumn fx:id="colHeure"      text="Heure" prefWidth="80"/>
+                        <TableColumn fx:id="colMontant"    text="Montant" prefWidth="80"/>
+                    </columns>
+                </TableView>
+            </VBox>
 
-    <!-- Affichage date, heure, adresse -->
-    <GridPane hgap="10" vgap="5">
-        <columnConstraints>
-            <ColumnConstraints halignment="RIGHT" minWidth="60"/>
-            <ColumnConstraints hgrow="ALWAYS"/>
-            <ColumnConstraints halignment="RIGHT" minWidth="60"/>
-            <ColumnConstraints hgrow="ALWAYS"/>
-        </columnConstraints>
+            <!-- DROITE : détail de la commande sélectionnée -->
+            <VBox spacing="15" prefWidth="300">
+                <Label text="Détail de la commande" styleClass="section-label"/>
 
-        <Label text="Date :"        GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <Label fx:id="dateLabel"    GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-        <Label text="Heure :"       GridPane.rowIndex="0" GridPane.columnIndex="2"/>
-        <Label fx:id="heureLabel"   GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+                <!-- En-tête date / heure / adresse -->
+                <GridPane hgap="10" vgap="5">
+                    <Label text="Date :"       GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <Label fx:id="dateLabel"   GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    <Label text="Heure :"      GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <Label fx:id="heureLabel"  GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <Label text="Adresse :"       GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <Label fx:id="adresseLabel"   GridPane.rowIndex="2" GridPane.columnIndex="1" wrapText="true"/>
+                </GridPane>
 
-        <Label text="Adresse :"       GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <Label fx:id="adresseLabel"   GridPane.rowIndex="1" GridPane.columnIndex="1"
-               GridPane.columnSpan="3" wrapText="true"/>
-    </GridPane>
+                <Separator/>
 
-    <!-- Détail des articles agrégés -->
-    <TableView fx:id="tableDetail">
-        <columns>
-            <TableColumn fx:id="colArticleDetail" text="Article"    prefWidth="200"/>
-            <TableColumn fx:id="colQteDetail"     text="Quantité"   prefWidth="80"/>
-            <TableColumn fx:id="colPrixDetail"    text="Prix ligne" prefWidth="100"/>
-        </columns>
-    </TableView>
-
-</VBox>
+                <!-- Détail ligne par ligne -->
+                <TableView fx:id="tableDetail" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colArticleDetail" text="Article"    prefWidth="180"/>
+                        <TableColumn fx:id="colQteDetail"     text="Quantité"   prefWidth="60"/>
+                        <TableColumn fx:id="colPrixDetail"    text="Prix ligne" prefWidth="80"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>
