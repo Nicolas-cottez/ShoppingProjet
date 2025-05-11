@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.shoppingprojet.Controleur.MainAdminController"
+            stylesheets="@styles.css">
+
+    <top>
+        <HBox styleClass="top-bar" spacing="20" alignment="CENTER_LEFT" prefHeight="50">
+            <!-- Titre de l'application -->
+            <Button text="Compte Admin" styleClass="app-title"/>
+
+            <!-- Menu de navigation -->
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Articles"    onAction="#voirArticle"/>
+                <Button text="Clients"     onAction="#voirClient"/>
+                <Button text="Remises"     onAction="#voirRemise"/>
+                <Button text="Statistiques" onAction="#voirStatistiques"/>
+            </HBox>
+
+            <!-- Pousse tout à droite -->
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Menu Compte -->
+            <MenuButton text="Compte" styleClass="account-menu">
+                <items>
+                    <MenuItem text="Profil"       onAction="#voirProfil"/>
+                    <MenuItem text="Déconnexion"  onAction="#handleLogout"/>
+                </items>
+            </MenuButton>
+        </HBox>
+    </top>
+
+    <center>
+        <AnchorPane fx:id="contentPane"/>
+    </center>
+
+</BorderPane>

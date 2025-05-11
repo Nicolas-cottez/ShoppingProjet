@@ -21,11 +21,10 @@ public class LoginController {
     @FXML private Label errorLabel;
 
     private final UtilisateurDAO utilisateurDAO = new UtilisateurDAOImpl();
-
     @FXML
     private void handleLogin() {
         String email = emailField.getText();
-        String pwd   = passwordField.getText();
+        String pwd = passwordField.getText();
         Utilisateur user = utilisateurDAO.findByEmailAndPassword(email, pwd);
 
         if (user == null) {
@@ -35,11 +34,16 @@ public class LoginController {
 
         try {
             Stage stage = (Stage) emailField.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass()
-                    .getResource("/com/example/shoppingprojet/main.fxml"));
+            Parent root = null;
 
-            if (!"admin".equalsIgnoreCase(user.getRole())) {
-                // on ne gère que le client ici
+            if ("admin".equalsIgnoreCase(user.getRole())) {
+                // Chargement de l'interface admin
+                root = FXMLLoader.load(getClass().getResource("/com/example/shoppingprojet/mainAdmin.fxml"));
+                stage.setTitle("Admin");
+            } else {
+                root = FXMLLoader.load(getClass().getResource("/com/example/shoppingprojet/main.fxml"));
+
+                stage.setTitle("ShoppingApp");
                 Utilisateur utilisateur = new Utilisateur(
                         user.getIdUtilisateur(),
                         user.getNom(),
@@ -53,6 +57,7 @@ public class LoginController {
                         user.getRole()
                 );
                 UtilisateurSession.setUtilisateur(utilisateur);
+
                 Commande cmd = new Commande(
                         0,
                         LocalDate.now(),
@@ -67,15 +72,13 @@ public class LoginController {
 
             stage.setScene(new Scene(root));
             stage.setMaximized(true);
-            stage.setTitle(user.getRole().equalsIgnoreCase("admin")
-                    ? "Admin" : "ShoppingApp");
             stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
+    }
     @FXML
     public void goToRegister() {
         try {
