@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.shoppingprojet.Controleur.ClientController"
+            prefWidth="900" prefHeight="600">
+
+    <!-- MARGES GLOBALES -->
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- TITRE -->
+    <top>
+        <Label text="Gestion des Clients" styleClass="header-label" BorderPane.alignment="CENTER"/>
+    </top>
+
+    <!-- CONTENU PRINCIPAL : GAUCHE = FORMULAIRES / DROITE = TABLE -->
+    <center>
+        <HBox spacing="30">
+
+            <!-- FORMULAIRES À GAUCHE -->
+            <VBox spacing="20" prefWidth="350">
+
+                <Label text="Formulaire Client" styleClass="section-label"/>
+
+                <GridPane hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="RIGHT" minWidth="100"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <!-- Champ ID Client pour modification/suppression -->
+                    <Label text="ID Client :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <TextField fx:id="clientIdField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Nom :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <TextField fx:id="clientNomField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <Label text="Prénom :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <TextField fx:id="clientPrenomField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <Label text="Email :" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <TextField fx:id="clientEmailField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                    <Label text="Adresse :" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                    <TextField fx:id="clientAdresseField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                    <Label text="Date d'inscription :" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                    <TextField fx:id="clientDateInscriptionField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                    <!-- Choix entre "Client" ou "Admin" -->
+                    <Label text="Rôle :" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                    <ComboBox fx:id="clientRoleComboBox" GridPane.rowIndex="6" GridPane.columnIndex="1">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String>Client</String>
+                                <String>Admin</String>
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+
+                </GridPane>
+
+                <HBox spacing="10" alignment="CENTER">
+                    <Button text="Ajouter" onAction="#handleAjouterClient"/>
+                    <Button text="Modifier" onAction="#handleModifierClient"/>
+                    <Button text="Supprimer" onAction="#handleSupprimerClient"/>
+                </HBox>
+
+            </VBox>
+
+            <!-- TABLEVIEW À DROITE -->
+            <VBox spacing="10" VBox.vgrow="ALWAYS">
+                <Label text="Historique des Clients" styleClass="section-label"/>
+                <TableView fx:id="tableClients" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colNom" text="Nom" prefWidth="100"/>
+                        <TableColumn fx:id="colPrenom" text="Prénom" prefWidth="100"/>
+                        <TableColumn fx:id="colEmail" text="Email" prefWidth="150"/>
+                        <TableColumn fx:id="colAdresse" text="Adresse" prefWidth="150"/>
+                        <TableColumn fx:id="colDateInscription" text="Date d'inscription" prefWidth="150"/>
+                        <TableColumn fx:id="colRole" text="Rôle" prefWidth="100">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="role"/>
+                            </cellValueFactory>
+                        </TableColumn>
+                    </columns>
+                </TableView>
+
+                <!-- BOUTON DE RAFRAÎCHISSEMENT -->
+                <HBox alignment="CENTER_RIGHT">
+                    <Button text="Afficher tous les clients" onAction="#handleAfficherClients"/>
+                </HBox>
+            </VBox>
+
+        </HBox>
+    </center>
+
+</BorderPane>
